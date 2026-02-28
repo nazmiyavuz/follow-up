@@ -102,8 +102,15 @@
           </datalist>
         </div>
         <div class="field">
-          <label for="timeValue">Time</label>
+          <label for="timeValue">Time (UTC)</label>
           <input type="time" id="timeValue" required />
+          <div class="utc-now-bar">
+            <span class="utc-now-label">Current time (UTC):</span>
+            <span class="utc-now-value" id="utcNowValue">--:--:--</span>
+            <button type="button" class="btn btn-small btn-utc" id="setUtcNowBtn">
+              Set to now
+            </button>
+          </div>
         </div>
         <div class="modal-actions">
           <button type="button" class="btn btn-secondary" id="modalCancel">

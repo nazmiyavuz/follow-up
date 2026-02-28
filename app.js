@@ -24,6 +24,9 @@
   const modalCancel = $('#modalCancel');
   const timeLabel = $('#timeLabel');
   const timeValue = $('#timeValue');
+  const utcNowValue = $('#utcNowValue');
+  const setUtcNowBtn = $('#setUtcNowBtn');
+  let utcUpdateInterval = null;
 
   function loadTimes() {
     try {
@@ -104,12 +107,32 @@
     timeValue.value = item ? item.value : '';
     $('.modal-title', modal).textContent = item ? 'Edit time' : 'New time';
     modal.showModal();
+    updateUtcDisplay();
+    if (utcUpdateInterval) clearInterval(utcUpdateInterval);
+    utcUpdateInterval = setInterval(updateUtcDisplay, 1000);
     timeLabel.focus();
   }
 
   function closeModal() {
+    if (utcUpdateInterval) {
+      clearInterval(utcUpdateInterval);
+      utcUpdateInterval = null;
+    }
     modal.close();
     editingId = null;
+  }
+
+  function getUtcTimeString(includeSeconds = false) {
+    const now = new Date();
+    const h = now.getUTCHours();
+    const m = now.getUTCMinutes();
+    const pad = (n) => String(n).padStart(2, '0');
+    if (includeSeconds) return `${pad(h)}:${pad(m)}:${pad(now.getUTCSeconds())}`;
+    return `${pad(h)}:${pad(m)}`;
+  }
+
+  function updateUtcDisplay() {
+    if (utcNowValue) utcNowValue.textContent = getUtcTimeString(true);
   }
 
   function addOrUpdate(label, value) {
@@ -190,6 +213,9 @@
   }
 
   if (modalCancel) modalCancel.addEventListener('click', closeModal);
+  if (setUtcNowBtn) setUtcNowBtn.addEventListener('click', () => {
+    if (timeValue) timeValue.value = getUtcTimeString(false);
+  });
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
   });
