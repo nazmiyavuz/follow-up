@@ -216,6 +216,16 @@
   if (setUtcNowBtn) setUtcNowBtn.addEventListener('click', () => {
     if (timeValue) timeValue.value = getUtcTimeString(false);
   });
+  if (timeValue) {
+    timeValue.addEventListener('input', () => {
+      const raw = timeValue.value.replace(/\D/g, '');
+      if (raw.length <= 2) {
+        timeValue.value = raw;
+      } else {
+        timeValue.value = raw.slice(0, 2) + ':' + raw.slice(2, 4);
+      }
+    });
+  }
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
   });
