@@ -111,27 +111,29 @@
         <h2 class="modal-title">New time</h2>
         <div class="field">
           <label for="timeLabel">Label</label>
+          <select id="timeLabel" required>
+            <option value="" disabled selected>Select label</option>
+            <option value="Crew Pickup (Hotel)">Crew Pickup (Hotel)</option>
+            <option value="Arrived Airport">Arrived Airport</option>
+            <option value="Leave Fly Wise">Leave Fly Wise</option>
+            <option value="Arrived Aircraft">Arrived Aircraft</option>
+            <option value="Security Search Complete">Security Search Complete</option>
+            <option value="Boarding Start">Boarding Start</option>
+            <option value="Boarding Done">Boarding Done</option>
+            <option value="Door Close">Door Close</option>
+            <option value="Bridge Off">Bridge Off</option>
+            <option value="Pushback Start">Pushback Start</option>
+            <option value="Deice Start">Deice Start</option>
+            <option value="Deice Complete">Deice Complete</option>
+            <option value="__custom__">Custom label...</option>
+          </select>
           <input
             type="text"
-            id="timeLabel"
-            list="labelPresets"
-            placeholder="Pick or type custom"
-            required
+            id="timeLabelCustom"
+            class="custom-label-input hidden"
+            placeholder="Type custom label"
+            aria-label="Custom label"
           />
-          <datalist id="labelPresets">
-            <option value="Crew Pickup (Hotel)"></option>
-            <option value="Arrived Airport"></option>
-            <option value="Leave Fly Wise"></option>
-            <option value="Arrived Aircraft"></option>
-            <option value="Security Search Complete"></option>
-            <option value="Boarding Start"></option>
-            <option value="Boarding Done"></option>
-            <option value="Door Close"></option>
-            <option value="Bridge Off"></option>
-            <option value="Pushback Start"></option>
-            <option value="Deice Start"></option>
-            <option value="Deice Complete"></option>
-          </datalist>
         </div>
         <div class="field">
           <label for="timeValue">Time (UTC)</label>

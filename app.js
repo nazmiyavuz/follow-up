@@ -25,6 +25,7 @@
     const form = $("#timeForm");
     const modalCancel = $("#modalCancel");
     const timeLabel = $("#timeLabel");
+    const timeLabelCustom = $("#timeLabelCustom");
     const timeValue = $("#timeValue");
     const utcNowValue = $("#utcNowValue");
     const setUtcNowBtn = $("#setUtcNowBtn");
@@ -123,11 +124,49 @@
       if (deleteAllBtn) deleteAllBtn.disabled = false;
     }
 
+    function syncCustomLabelVisibility() {
+      if (!timeLabel || !timeLabelCustom) return;
+      const isCustom = timeLabel.value === "__custom__";
+      timeLabelCustom.classList.toggle("hidden", !isCustom);
+      timeLabelCustom.required = isCustom;
+      if (!isCustom) timeLabelCustom.value = "";
+    }
+
+    function getLabelValue() {
+      if (!timeLabel) return "";
+      if (timeLabel.value === "__custom__") {
+        return timeLabelCustom ? timeLabelCustom.value.trim() : "";
+      }
+      return timeLabel.value.trim();
+    }
+
+    function setLabelValue(label) {
+      if (!timeLabel) return;
+      const normalized = (label || "").trim();
+      if (!normalized) {
+        timeLabel.value = "";
+        if (timeLabelCustom) timeLabelCustom.value = "";
+        syncCustomLabelVisibility();
+        return;
+      }
+      const hasPreset = [...timeLabel.options].some(
+        (opt) => opt.value === normalized,
+      );
+      if (hasPreset) {
+        timeLabel.value = normalized;
+        if (timeLabelCustom) timeLabelCustom.value = "";
+      } else {
+        timeLabel.value = "__custom__";
+        if (timeLabelCustom) timeLabelCustom.value = normalized;
+      }
+      syncCustomLabelVisibility();
+    }
+
     function openModal(id = null) {
       if (!modal) return;
       editingId = id;
       const item = id ? times.find((t) => t.id === id) : null;
-      if (timeLabel) timeLabel.value = item ? item.label : "";
+      setLabelValue(item ? item.label : "");
       if (timeValue) timeValue.value = item ? item.value : "";
       const titleEl = $(".modal-title", modal);
       if (titleEl) titleEl.textContent = item ? "Edit time" : "New time";
@@ -315,7 +354,7 @@
     if (form) {
       form.addEventListener("submit", (e) => {
         e.preventDefault();
-        const label = timeLabel.value.trim();
+        const label = getLabelValue();
         const value = timeValue.value;
         if (!label || !value) return;
         addOrUpdate(label, value);
@@ -323,6 +362,14 @@
     }
 
     if (modalCancel) modalCancel.addEventListener("click", closeModal);
+    if (timeLabel) {
+      timeLabel.addEventListener("change", () => {
+        syncCustomLabelVisibility();
+        if (timeLabel.value === "__custom__" && timeLabelCustom) {
+          timeLabelCustom.focus();
+        }
+      });
+    }
     if (setUtcNowBtn)
       setUtcNowBtn.addEventListener("click", () => {
         if (timeValue) timeValue.value = getUtcTimeString(false);
@@ -351,6 +398,7 @@
 
     loadTheme();
     loadTimes();
+    syncCustomLabelVisibility();
     if (flightDate) flightDate.value = getUtcDateString();
     if (flightNumber) flightNumber.value = "VF ";
     render();
