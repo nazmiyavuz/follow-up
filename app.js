@@ -128,6 +128,7 @@
       if (!timeLabel || !timeLabelCustom) return;
       const isCustom = timeLabel.value === "__custom__";
       timeLabelCustom.classList.toggle("hidden", !isCustom);
+      timeLabelCustom.hidden = !isCustom;
       timeLabelCustom.required = isCustom;
       if (!isCustom) timeLabelCustom.value = "";
     }
@@ -363,12 +364,14 @@
 
     if (modalCancel) modalCancel.addEventListener("click", closeModal);
     if (timeLabel) {
-      timeLabel.addEventListener("change", () => {
+      const handleLabelSelection = () => {
         syncCustomLabelVisibility();
         if (timeLabel.value === "__custom__" && timeLabelCustom) {
           timeLabelCustom.focus();
         }
-      });
+      };
+      timeLabel.addEventListener("change", handleLabelSelection);
+      timeLabel.addEventListener("input", handleLabelSelection);
     }
     if (setUtcNowBtn)
       setUtcNowBtn.addEventListener("click", () => {
