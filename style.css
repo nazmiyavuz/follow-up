@@ -149,6 +149,7 @@ body {
 
 .field-inline .input-flight {
   font-family: var(--font-mono);
+  text-transform: uppercase;
 }
 
 /* ----- Toolbar ----- */

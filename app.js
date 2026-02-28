@@ -258,6 +258,12 @@
     if (e.target === modal) closeModal();
   });
 
+  if (flightNumber) {
+    flightNumber.addEventListener('input', () => {
+      flightNumber.value = flightNumber.value.toUpperCase();
+    });
+  }
+
   loadTheme();
   loadTimes();
   if (flightDate) flightDate.value = getUtcDateString();
