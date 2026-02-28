@@ -35,3 +35,11 @@ Temporary Items
 *.icloud
 
 # End of https://www.toptal.com/developers/gitignore/api/macos
+
+### Web / Editor ###
+.env
+.env.local
+.env.*.local
+*.log
+.vscode/
+.idea/
