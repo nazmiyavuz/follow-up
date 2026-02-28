@@ -186,6 +186,12 @@
         alert("Please select a row first.");
         return;
       }
+      const selectedCount = selectedIds.size;
+      const message =
+        selectedCount === 1
+          ? "Delete selected row?"
+          : `Delete ${selectedCount} selected rows?`;
+      if (!confirm(message)) return;
       times = times.filter((t) => !selectedIds.has(t.id));
       selectedIds.clear();
       saveTimes();
@@ -197,7 +203,7 @@
         alert("No times to delete.");
         return;
       }
-      if (!confirm("Delete all times?")) return;
+      if (!confirm("Delete all times? This cannot be undone.")) return;
       times = [];
       selectedIds.clear();
       saveTimes();
@@ -264,6 +270,19 @@
         const app = document.querySelector(".app");
         if (!app || !app.contains(btn)) return;
         if (btn.closest("dialog")) return; // modal has its own handlers
+
+        const handledButtonIds = new Set([
+          "newBtn",
+          "editBtn",
+          "deleteBtn",
+          "deleteAllBtn",
+          "copyWhatsAppBtn",
+          "themeBtn",
+        ]);
+        if (!handledButtonIds.has(btn.id)) return;
+        // Prevent duplicate execution from inline onclick fallbacks on the same button.
+        e.preventDefault();
+        e.stopPropagation();
 
         switch (btn.id) {
           case "newBtn":
