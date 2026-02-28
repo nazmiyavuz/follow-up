@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AJet Follow Up Times</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <header class="banner">
+        <span class="banner-text">AJet</span>
+      </header>
+
+      <main class="main">
+        <div class="title-row">
+          <h1 class="title">
+            AJet Follow Up <span class="title-en">/ Times</span>
+          </h1>
+
+          <button
+            type="button"
+            class="btn theme-btn"
+            id="themeBtn"
+            title="Toggle theme"
+            aria-label="Toggle dark/light theme"
+          >
+            <span class="theme-icon">🌙</span>
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <div class="actions">
+            <button type="button" class="btn btn-primary" id="newBtn">
+              NEW
+            </button>
+          </div>
+          <div class="toolbar-divider" aria-hidden="true"></div>
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" id="editBtn">
+              EDIT
+            </button>
+          </div>
+          <div class="toolbar-divider" aria-hidden="true"></div>
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" id="deleteBtn">
+              DELETE
+            </button>
+            <button type="button" class="btn btn-danger" id="deleteAllBtn">
+              DELETE ALL
+            </button>
+          </div>
+        </div>
+
+        <div class="times-list" id="timesList">
+          <!-- Times rendered by JS -->
+        </div>
+
+        <p class="hint" id="hint">
+          Add times with NEW. Select a row and use EDIT to change it, or DELETE / COPY WHATSAPP.
+        </p>
+
+        <div class="bottom-bar">
+          <button type="button" class="btn btn-whatsapp" id="copyWhatsAppBtn">
+            COPY WHATSAPP
+          </button>
+        </div>
+      </main>
+    </div>
+
+    <dialog class="modal" id="timeModal">
+      <form class="modal-form" id="timeForm">
+        <h2 class="modal-title">New time</h2>
+        <div class="field">
+          <label for="timeLabel">Label</label>
+          <input
+            type="text"
+            id="timeLabel"
+            list="labelPresets"
+            placeholder="Pick or type custom"
+            required
+          />
+          <datalist id="labelPresets">
+            <option value="Crew Pickup (Hotel)"></option>
+            <option value="Arrived Airport"></option>
+            <option value="Leave Fly Wise"></option>
+            <option value="Arrived Aircraft"></option>
+            <option value="Security Search Complete"></option>
+            <option value="Boarding Start"></option>
+            <option value="Boarding Done"></option>
+            <option value="Door Close"></option>
+            <option value="Bridge Off"></option>
+            <option value="Pushback Start"></option>
+            <option value="Deice Start"></option>
+            <option value="Deice Complete"></option>
+          </datalist>
+        </div>
+        <div class="field">
+          <label for="timeValue">Time</label>
+          <input type="time" id="timeValue" required />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="modalCancel">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>

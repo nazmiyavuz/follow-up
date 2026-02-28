@@ -1,0 +1,357 @@
+/* ----- Variables ----- */
+:root {
+  --bg: #f5f0e8;
+  --surface: #fffef9;
+  --text: #1a1915;
+  --text-muted: #5c5a54;
+  --accent: #c45c3e;
+  --accent-hover: #a84d32;
+  --border: #e0dcd4;
+  --danger: #b83d3d;
+  --danger-hover: #9a3333;
+  --success: #2d6a4f;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --shadow: 0 2px 8px rgba(26, 25, 21, 0.06);
+  --radius: 10px;
+  --row-alt: #ebe7e0;
+}
+
+[data-theme="dark"] {
+  --bg: #1a1c22;
+  --surface: #23262e;
+  --text: #e8e6e1;
+  --text-muted: #9a9892;
+  --accent: #e07d5e;
+  --accent-hover: #f08f70;
+  --border: #3a3d47;
+  --danger: #d65555;
+  --danger-hover: #e86a6a;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  --row-alt: #2c2e36;
+}
+
+/* ----- Base ----- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* ----- Layout ----- */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.25rem 2rem;
+}
+
+/* ----- Banner ----- */
+.banner {
+  padding: 1rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.banner-text {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+/* ----- Main ----- */
+.main {
+  flex: 1;
+}
+
+.title-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.title-row .title {
+  margin: 0;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 1.25rem;
+  color: var(--text);
+}
+
+.title-en {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* ----- Toolbar ----- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.theme-btn {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.theme-btn:hover {
+  background: var(--border);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.toolbar-divider {
+  width: 1px;
+  min-height: 28px;
+  align-self: stretch;
+  background: var(--border);
+  margin: 0 1rem;
+}
+
+/* ----- Buttons ----- */
+.btn {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.5rem 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--border);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: var(--danger-hover);
+}
+
+.btn-whatsapp {
+  background: #25d366;
+  color: #fff;
+  margin-left: auto;
+}
+
+.btn-whatsapp:hover {
+  background: #20bd5a;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn:disabled:hover {
+  background: inherit;
+}
+
+/* ----- Times list ----- */
+.times-list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  min-height: 200px;
+  overflow: hidden;
+}
+
+.times-list:empty::after {
+  content: 'No times yet. Click NEW to add.';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.time-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.time-row:nth-child(even) {
+  background: var(--row-alt);
+}
+
+.time-row:last-child {
+  border-bottom: none;
+}
+
+.time-row:hover {
+  background: var(--bg);
+}
+
+.time-row.selected {
+  background: rgba(196, 92, 62, 0.12);
+  border-left: 3px solid var(--accent);
+  padding-left: calc(1rem - 3px);
+}
+
+.time-label {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.time-value {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* ----- Hint ----- */
+.hint {
+  margin: 1rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ----- Bottom bar ----- */
+.bottom-bar {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.bottom-bar .btn-whatsapp {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* ----- Modal ----- */
+.modal {
+  border: none;
+  border-radius: var(--radius);
+  padding: 0;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  background: var(--surface);
+  max-width: 360px;
+  width: 90%;
+}
+
+.modal::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.modal-form {
+  padding: 1.5rem;
+}
+
+.modal-title {
+  margin: 0 0 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+  color: var(--text-muted);
+}
+
+.field input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(196, 92, 62, 0.2);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+/* ----- Dark theme icon (swapped in JS) ----- */
