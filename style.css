@@ -10,8 +10,8 @@
   --danger: #b83d3d;
   --danger-hover: #9a3333;
   --success: #2d6a4f;
-  --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
   --shadow: 0 2px 8px rgba(26, 25, 21, 0.06);
   --radius: 10px;
   --row-alt: #ebe7e0;
@@ -173,7 +173,9 @@ body {
   border-radius: var(--radius);
   cursor: pointer;
   font-size: 1.25rem;
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
 }
 
 .theme-btn:hover {
@@ -204,7 +206,10 @@ body {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, transform 0.1s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    transform 0.1s;
 }
 
 .btn:active {
@@ -270,7 +275,7 @@ body {
 }
 
 .times-list:empty::after {
-  content: 'No times yet. Click NEW to add.';
+  content: "No times yet. Click NEW to add.";
   display: flex;
   align-items: center;
   justify-content: center;
