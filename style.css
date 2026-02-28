@@ -55,11 +55,15 @@ body {
 /* ----- Layout ----- */
 .app {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   max-width: 720px;
   margin: 0 auto;
   padding: 0 1.25rem 2rem;
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+  padding-bottom: max(2rem, env(safe-area-inset-bottom));
 }
 
 /* ----- Banner ----- */
@@ -128,16 +132,35 @@ body {
   color: var(--text-muted);
 }
 
+/* Equal height and alignment for iOS – date and text inputs */
 .field-inline .input-date,
 .field-inline .input-flight {
   width: 100%;
-  padding: 0.6rem 0.75rem;
+  min-height: 44px;
+  height: 44px;
+  padding: 0 0.75rem;
   font-family: var(--font-sans);
   font-size: 1rem;
+  line-height: 1;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--surface);
   color: var(--text);
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+}
+
+/* iOS date input often ignores height; keep layout consistent */
+@supports (-webkit-touch-callout: none) {
+  .field-inline .input-date,
+  .field-inline .input-flight {
+    min-height: 44px;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+    height: auto;
+    line-height: 1.25;
+  }
 }
 
 .field-inline .input-date:focus,
@@ -154,16 +177,26 @@ body {
 
 /* ----- Toolbar ----- */
 .toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 0.5rem;
   margin-bottom: 1.5rem;
+}
+
+@media (min-width: 480px) {
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
 }
 
 .theme-btn {
   width: 44px;
   height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
   display: inline-flex;
   align-items: center;
@@ -188,12 +221,46 @@ body {
   gap: 0.5rem;
 }
 
+@media (min-width: 480px) {
+  .toolbar .actions {
+    flex: 0 0 auto;
+  }
+}
+
+.toolbar .actions:first-of-type {
+  grid-column: 1;
+}
+.toolbar .actions:nth-of-type(3) {
+  grid-column: 2;
+}
+.toolbar .actions:last-of-type {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+@media (min-width: 480px) {
+  .toolbar .actions:last-of-type {
+    grid-column: auto;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
 .toolbar-divider {
-  width: 1px;
-  min-height: 28px;
-  align-self: stretch;
-  background: var(--border);
-  margin: 0 1rem;
+  display: none;
+}
+
+@media (min-width: 480px) {
+  .toolbar-divider {
+    display: block;
+    width: 1px;
+    min-height: 28px;
+    align-self: stretch;
+    background: var(--border);
+    margin: 0 0.25rem;
+  }
 }
 
 /* ----- Buttons ----- */
@@ -203,6 +270,7 @@ body {
   font-weight: 500;
   letter-spacing: 0.04em;
   padding: 0.5rem 0.9rem;
+  min-height: 44px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -210,6 +278,10 @@ body {
     background 0.2s,
     color 0.2s,
     transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .btn:active {
@@ -327,8 +399,10 @@ body {
 /* ----- Hint ----- */
 .hint {
   margin: 1rem 0 0;
+  padding: 0;
   font-size: 0.85rem;
   color: var(--text-muted);
+  line-height: 1.4;
 }
 
 /* ----- Bottom bar ----- */
@@ -421,6 +495,7 @@ body {
 .btn-small {
   padding: 0.35rem 0.6rem;
   font-size: 0.8rem;
+  min-height: 36px;
 }
 
 .btn-utc {
