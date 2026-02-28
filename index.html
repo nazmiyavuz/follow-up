@@ -75,12 +75,12 @@
           <div class="col-12 col-sm actions">
             <div class="row g-2">
               <div class="col-6 col-sm-auto">
-                <button type="button" class="btn btn-secondary w-100" id="deleteBtn" onclick="if(window.ajet&&window.ajet.deleteSelected){window.ajet.deleteSelected()}else{alert('Please select a row first.')}">
+                <button type="button" class="btn btn-secondary w-100" id="deleteBtn" onclick="if(window.ajet&&window.ajet.deleteSelected){if(confirm('Delete selected row(s)?')){window.ajet.deleteSelected()}}else{alert('Please select a row first.')}">
                   DELETE
                 </button>
               </div>
               <div class="col-6 col-sm-auto">
-                <button type="button" class="btn btn-danger w-100" id="deleteAllBtn" onclick="if(window.ajet&&window.ajet.deleteAll){window.ajet.deleteAll()}else{alert('No times to delete.')}">
+                <button type="button" class="btn btn-danger w-100" id="deleteAllBtn">
                   DELETE ALL
                 </button>
               </div>
@@ -163,6 +163,6 @@
       </form>
     </dialog>
 
-    <script src="app.js?v=20260228a"></script>
+    <script src="app.js?v=20260228b"></script>
   </body>
 </html>
