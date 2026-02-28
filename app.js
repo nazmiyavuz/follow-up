@@ -197,6 +197,7 @@
     const dateStr = flightDate ? formatDateForWhatsApp(flightDate.value) : "";
     const header = [
       `FLIGHT CODE: ${flightCode || ""}`,
+      "",
       `DATE: ${dateStr}`,
       "",
       "",
@@ -271,5 +272,6 @@
   loadTheme();
   loadTimes();
   if (flightDate) flightDate.value = getUtcDateString();
+  if (flightNumber) flightNumber.value = "VF ";
   render();
 })();
