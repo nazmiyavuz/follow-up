@@ -13,14 +13,14 @@
     />
   </head>
   <body>
-    <div class="app">
+    <div class="app container">
       <header class="banner">
         <span class="banner-text">AJet</span>
       </header>
 
       <main class="main">
-        <div class="title-row">
-          <h1 class="title">
+        <div class="title-row d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <h1 class="title mb-0">
             AJet Follow Up <span class="title-en">/ Times</span>
           </h1>
 
@@ -30,27 +30,28 @@
             id="themeBtn"
             title="Toggle theme"
             aria-label="Toggle dark/light theme"
+            onclick="if(window.ajet&&window.ajet.toggleTheme){window.ajet.toggleTheme()}else{const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',t);}"
           >
             <span class="theme-icon">🌙</span>
           </button>
         </div>
 
-        <div class="filters-row">
-          <div class="field-inline">
-            <label for="flightDate">Date</label>
+        <div class="filters-row row g-2 g-md-3 mb-3">
+          <div class="field-inline col-12 col-sm-6 col-md">
+            <label for="flightDate" class="form-label">Date</label>
             <input
               type="date"
               id="flightDate"
-              class="input-date"
+              class="input-date form-control"
               aria-label="Flight date"
             />
           </div>
-          <div class="field-inline">
-            <label for="flightNumber">Flight number</label>
+          <div class="field-inline col-12 col-sm-6 col-md">
+            <label for="flightNumber" class="form-label">Flight number</label>
             <input
               type="text"
               id="flightNumber"
-              class="input-flight"
+              class="input-flight form-control"
               placeholder="e.g. VF 123"
               aria-label="Flight number"
               autocomplete="off"
@@ -58,26 +59,32 @@
           </div>
         </div>
 
-        <div class="toolbar">
-          <div class="actions">
-            <button type="button" class="btn btn-primary" id="newBtn">
+        <div class="toolbar row g-2 mb-3">
+          <div class="col-6 col-sm-auto actions">
+            <button type="button" class="btn btn-primary w-100 w-sm-auto" id="newBtn" onclick="if(window.ajet&&window.ajet.openModal){window.ajet.openModal()}else{const m=document.getElementById('timeModal');if(m&&m.showModal){m.showModal();}}">
               NEW
             </button>
           </div>
-          <div class="toolbar-divider" aria-hidden="true"></div>
-          <div class="actions">
-            <button type="button" class="btn btn-secondary" id="editBtn">
+          <div class="toolbar-divider d-none d-sm-block" aria-hidden="true"></div>
+          <div class="col-6 col-sm-auto actions">
+            <button type="button" class="btn btn-secondary w-100 w-sm-auto" id="editBtn" onclick="if(window.ajet&&window.ajet.openModalEdit){window.ajet.openModalEdit()}else{alert('Please select a row first.')}">
               EDIT
             </button>
           </div>
-          <div class="toolbar-divider" aria-hidden="true"></div>
-          <div class="actions">
-            <button type="button" class="btn btn-secondary" id="deleteBtn">
-              DELETE
-            </button>
-            <button type="button" class="btn btn-danger" id="deleteAllBtn">
-              DELETE ALL
-            </button>
+          <div class="toolbar-divider d-none d-sm-block" aria-hidden="true"></div>
+          <div class="col-12 col-sm actions">
+            <div class="row g-2">
+              <div class="col-6 col-sm-auto">
+                <button type="button" class="btn btn-secondary w-100" id="deleteBtn" onclick="if(window.ajet&&window.ajet.deleteSelected){if(confirm('Delete selected row(s)?')){window.ajet.deleteSelected()}}else{alert('Please select a row first.')}">
+                  DELETE
+                </button>
+              </div>
+              <div class="col-6 col-sm-auto">
+                <button type="button" class="btn btn-danger w-100" id="deleteAllBtn">
+                  DELETE ALL
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -85,13 +92,14 @@
           <!-- Times rendered by JS -->
         </div>
 
-        <p class="hint" id="hint">
+        <p class="hint mt-3 mb-0" id="hint">
           Add times with NEW. Select a row to EDIT or DELETE. COPY WHATSAPP
           copies all times to share.
         </p>
+        <p class="hint mt-1 mb-0" id="jsStatus">JS status: loading...</p>
 
-        <div class="bottom-bar">
-          <button type="button" class="btn btn-whatsapp" id="copyWhatsAppBtn">
+        <div class="bottom-bar mt-4 pt-3">
+          <button type="button" class="btn btn-whatsapp w-100" id="copyWhatsAppBtn" onclick="if(window.ajet&&window.ajet.copyWhatsApp){window.ajet.copyWhatsApp()}else{alert('No times to copy.')}">
             COPY WHATSAPP
           </button>
         </div>
@@ -155,6 +163,6 @@
       </form>
     </dialog>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=20260228b"></script>
   </body>
 </html>

@@ -52,18 +52,145 @@ body {
   line-height: 1.5;
 }
 
+/* ----- Lightweight utility classes (Bootstrap replacement) ----- */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.mb-3 {
+  margin-bottom: 1rem !important;
+}
+
+.mt-3 {
+  margin-top: 1rem !important;
+}
+
+.mt-4 {
+  margin-top: 1.5rem !important;
+}
+
+.pt-3 {
+  padding-top: 1rem !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.row {
+  --gutter-x: 0;
+  --gutter-y: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(-1 * var(--gutter-y));
+  margin-right: calc(-0.5 * var(--gutter-x));
+  margin-left: calc(-0.5 * var(--gutter-x));
+}
+
+.row > * {
+  margin-top: var(--gutter-y);
+  padding-right: calc(0.5 * var(--gutter-x));
+  padding-left: calc(0.5 * var(--gutter-x));
+  min-width: 0;
+}
+
+.g-2 {
+  --gutter-x: 0.5rem;
+  --gutter-y: 0.5rem;
+}
+
+.col-12 {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.col-6 {
+  flex: 0 0 auto;
+  width: 50%;
+}
+
+@media (min-width: 576px) {
+  .col-sm-6 {
+    flex: 0 0 auto;
+    width: 50%;
+  }
+
+  .col-sm {
+    flex: 1 0 0;
+  }
+
+  .col-sm-auto {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  .d-sm-block {
+    display: block !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .g-md-3 {
+    --gutter-x: 1rem;
+    --gutter-y: 1rem;
+  }
+
+  .col-md {
+    flex: 1 0 0;
+  }
+}
+
 /* ----- Layout ----- */
-.app {
+.app.container {
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   max-width: 720px;
-  margin: 0 auto;
-  padding: 0 1.25rem 2rem;
+  margin-left: auto;
+  margin-right: auto;
   padding-left: max(1.25rem, env(safe-area-inset-left));
   padding-right: max(1.25rem, env(safe-area-inset-right));
   padding-bottom: max(2rem, env(safe-area-inset-bottom));
+  position: relative;
+  z-index: 9999;
+  isolation: isolate;
+}
+
+/* Emergency fallback: ensure app and children can receive pointer events */
+.app,
+.app * {
+  pointer-events: auto !important;
 }
 
 /* ----- Banner ----- */
@@ -92,6 +219,8 @@ body {
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1.25rem;
+  position: relative;
+  z-index: 2;
 }
 
 .title-row .title {
@@ -112,18 +241,14 @@ body {
 
 /* ----- Filters row (date + flight number) ----- */
 .filters-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0;
 }
 
-.field-inline {
-  flex: 1;
-  min-width: 140px;
+.filters-row .field-inline {
+  min-width: 0;
 }
 
+.field-inline label.form-label,
 .field-inline label {
   display: block;
   font-size: 0.85rem;
@@ -132,16 +257,14 @@ body {
   color: var(--text-muted);
 }
 
-/* Equal height and alignment for iOS – date and text inputs */
 .field-inline .input-date,
-.field-inline .input-flight {
+.field-inline .input-flight,
+.field-inline .form-control {
   width: 100%;
   min-height: 44px;
-  height: 44px;
-  padding: 0 0.75rem;
+  padding: 0.6rem 0.75rem;
   font-family: var(--font-sans);
   font-size: 1rem;
-  line-height: 1;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--surface);
@@ -151,11 +274,9 @@ body {
   box-sizing: border-box;
 }
 
-/* iOS date input often ignores height; keep layout consistent */
 @supports (-webkit-touch-callout: none) {
   .field-inline .input-date,
   .field-inline .input-flight {
-    min-height: 44px;
     padding-top: 0.7rem;
     padding-bottom: 0.7rem;
     height: auto;
@@ -164,7 +285,8 @@ body {
 }
 
 .field-inline .input-date:focus,
-.field-inline .input-flight:focus {
+.field-inline .input-flight:focus,
+.field-inline .form-control:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(196, 92, 62, 0.2);
@@ -177,19 +299,58 @@ body {
 
 /* ----- Toolbar ----- */
 .toolbar {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem 0.5rem;
-  margin-bottom: 1.5rem;
+  align-items: center;
+  margin-bottom: 0;
+  position: relative;
+  z-index: 2;
 }
 
-@media (min-width: 480px) {
-  .toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.75rem;
-  }
+.toolbar .actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbar .actions .row {
+  flex: 1;
+  min-width: 0;
+}
+
+.toolbar-divider {
+  width: 0.5px;
+  min-height: 24px;
+  align-self: center;
+  background: var(--border);
+  opacity: 0.65;
+  margin: 0 0.75rem;
+  flex-shrink: 0;
+}
+
+/* ----- Buttons ----- */
+.btn {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.5rem 0.9rem;
+  min-height: 44px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  /* Ensure buttons always receive clicks (overrides any Bootstrap or overlay) */
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 5;
 }
 
 .theme-btn {
@@ -213,75 +374,6 @@ body {
 
 .theme-btn:hover {
   background: var(--border);
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-@media (min-width: 480px) {
-  .toolbar .actions {
-    flex: 0 0 auto;
-  }
-}
-
-.toolbar .actions:first-of-type {
-  grid-column: 1;
-}
-.toolbar .actions:nth-of-type(3) {
-  grid-column: 2;
-}
-.toolbar .actions:last-of-type {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-}
-
-@media (min-width: 480px) {
-  .toolbar .actions:last-of-type {
-    grid-column: auto;
-    display: flex;
-    flex-wrap: wrap;
-  }
-}
-
-.toolbar-divider {
-  display: none;
-}
-
-@media (min-width: 480px) {
-  .toolbar-divider {
-    display: block;
-    width: 1px;
-    min-height: 28px;
-    align-self: stretch;
-    background: var(--border);
-    margin: 0 0.25rem;
-  }
-}
-
-/* ----- Buttons ----- */
-.btn {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  padding: 0.5rem 0.9rem;
-  min-height: 44px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    transform 0.1s;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
 }
 
 .btn:active {
@@ -399,10 +491,8 @@ body {
 /* ----- Hint ----- */
 .hint {
   margin: 1rem 0 0;
-  padding: 0;
   font-size: 0.85rem;
   color: var(--text-muted);
-  line-height: 1.4;
 }
 
 /* ----- Bottom bar ----- */
@@ -410,6 +500,8 @@ body {
   margin-top: 2rem;
   padding-top: 1rem;
   border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 2;
 }
 
 .bottom-bar .btn-whatsapp {
@@ -510,3 +602,10 @@ body {
 }
 
 /* ----- Dark theme icon (swapped in JS) ----- */
+
+/* Bootstrap-style responsive width (fallback if not in Bootstrap) */
+@media (min-width: 576px) {
+  .w-sm-auto {
+    width: auto !important;
+  }
+}
