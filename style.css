@@ -53,13 +53,17 @@ body {
 }
 
 /* ----- Layout ----- */
-.app {
+.app.container {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   max-width: 720px;
-  margin: 0 auto;
-  padding: 0 1.25rem 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+  padding-bottom: max(2rem, env(safe-area-inset-bottom));
 }
 
 /* ----- Banner ----- */
@@ -108,18 +112,14 @@ body {
 
 /* ----- Filters row (date + flight number) ----- */
 .filters-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0;
 }
 
-.field-inline {
-  flex: 1;
-  min-width: 140px;
+.filters-row .field-inline {
+  min-width: 0;
 }
 
+.field-inline label.form-label,
 .field-inline label {
   display: block;
   font-size: 0.85rem;
@@ -129,8 +129,10 @@ body {
 }
 
 .field-inline .input-date,
-.field-inline .input-flight {
+.field-inline .input-flight,
+.field-inline .form-control {
   width: 100%;
+  min-height: 44px;
   padding: 0.6rem 0.75rem;
   font-family: var(--font-sans);
   font-size: 1rem;
@@ -138,10 +140,24 @@ body {
   border-radius: 6px;
   background: var(--surface);
   color: var(--text);
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .field-inline .input-date,
+  .field-inline .input-flight {
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+    height: auto;
+    line-height: 1.25;
+  }
 }
 
 .field-inline .input-date:focus,
-.field-inline .input-flight:focus {
+.field-inline .input-flight:focus,
+.field-inline .form-control:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(196, 92, 62, 0.2);
@@ -154,16 +170,56 @@ body {
 
 /* ----- Toolbar ----- */
 .toolbar {
-  display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
+}
+
+.toolbar .actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbar .actions .row {
+  flex: 1;
+  min-width: 0;
+}
+
+.toolbar-divider {
+  width: 1px;
+  min-height: 28px;
+  align-self: stretch;
+  background: var(--border);
+  margin: 0 0.25rem;
+  flex-shrink: 0;
+}
+
+/* ----- Buttons ----- */
+.app .btn {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.5rem 0.9rem;
+  min-height: 44px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .theme-btn {
   width: 44px;
   height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
   display: inline-flex;
   align-items: center;
@@ -180,36 +236,6 @@ body {
 
 .theme-btn:hover {
   background: var(--border);
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.toolbar-divider {
-  width: 1px;
-  min-height: 28px;
-  align-self: stretch;
-  background: var(--border);
-  margin: 0 1rem;
-}
-
-/* ----- Buttons ----- */
-.btn {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  padding: 0.5rem 0.9rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    transform 0.1s;
 }
 
 .btn:active {
@@ -421,6 +447,7 @@ body {
 .btn-small {
   padding: 0.35rem 0.6rem;
   font-size: 0.8rem;
+  min-height: 36px;
 }
 
 .btn-utc {
@@ -435,3 +462,10 @@ body {
 }
 
 /* ----- Dark theme icon (swapped in JS) ----- */
+
+/* Bootstrap-style responsive width (fallback if not in Bootstrap) */
+@media (min-width: 576px) {
+  .w-sm-auto {
+    width: auto !important;
+  }
+}
