@@ -26,7 +26,16 @@
   const timeValue = $('#timeValue');
   const utcNowValue = $('#utcNowValue');
   const setUtcNowBtn = $('#setUtcNowBtn');
+  const flightDate = $('#flightDate');
   let utcUpdateInterval = null;
+
+  function getUtcDateString() {
+    const now = new Date();
+    const y = now.getUTCFullYear();
+    const m = now.getUTCMonth() + 1;
+    const d = now.getUTCDate();
+    return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  }
 
   function loadTimes() {
     try {
@@ -232,5 +241,6 @@
 
   loadTheme();
   loadTimes();
+  if (flightDate) flightDate.value = getUtcDateString();
   render();
 })();

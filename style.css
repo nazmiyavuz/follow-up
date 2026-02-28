@@ -106,6 +106,51 @@ body {
   color: var(--text-muted);
 }
 
+/* ----- Filters row (date + flight number) ----- */
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.field-inline {
+  flex: 1;
+  min-width: 140px;
+}
+
+.field-inline label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+  color: var(--text-muted);
+}
+
+.field-inline .input-date,
+.field-inline .input-flight {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.field-inline .input-date:focus,
+.field-inline .input-flight:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(196, 92, 62, 0.2);
+}
+
+.field-inline .input-flight {
+  font-family: var(--font-mono);
+}
+
 /* ----- Toolbar ----- */
 .toolbar {
   display: flex;
