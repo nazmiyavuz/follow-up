@@ -27,6 +27,7 @@
   const utcNowValue = $('#utcNowValue');
   const setUtcNowBtn = $('#setUtcNowBtn');
   const flightDate = $('#flightDate');
+  const flightNumber = $('#flightNumber');
   let utcUpdateInterval = null;
 
   function getUtcDateString() {
@@ -95,6 +96,13 @@
     return `${h.padStart(2, '0')}:${(m || '00').padStart(2, '0')}`;
   }
 
+  /** Format YYYY-MM-DD as DD.MM.YYYY for WhatsApp copy */
+  function formatDateForWhatsApp(dateValue) {
+    if (!dateValue) return '';
+    const [y, m, d] = dateValue.split('-');
+    return [d, m, y].join('.');
+  }
+
   function toggleSelect(id) {
     if (selectedIds.has(id)) selectedIds.delete(id);
     else selectedIds.add(id);
@@ -105,7 +113,7 @@
     const hasSelection = selectedIds.size > 0;
     if (editBtn) editBtn.disabled = !hasSelection;
     if (deleteBtn) deleteBtn.disabled = !hasSelection;
-    if (copyWhatsAppBtn) copyWhatsAppBtn.disabled = !hasSelection;
+    if (copyWhatsAppBtn) copyWhatsAppBtn.disabled = times.length === 0;
     if (deleteAllBtn) deleteAllBtn.disabled = times.length === 0;
   }
 
@@ -182,10 +190,21 @@
   }
 
   function copyWhatsApp() {
-    if (selectedIds.size === 0) return;
-    const selected = times.filter((t) => selectedIds.has(t.id));
-    const lines = selected.map((t) => `${t.label}: ${formatTime(t.value)}`);
-    const text = lines.join('\n');
+    if (times.length === 0) return;
+    const flightCode = flightNumber ? flightNumber.value.trim() : '';
+    const dateStr = flightDate ? formatDateForWhatsApp(flightDate.value) : '';
+    const header = [
+      `FLIGHT CODE: ${flightCode || ''}`,
+      `DATE: ${dateStr}`,
+      '',
+      '',
+    ].join('\n');
+    const timeLines = times.map((t) => {
+      const hasTime = t.value && /^\d{1,2}:\d{2}/.test(t.value);
+      const timePart = hasTime ? formatTime(t.value) : 'N/A';
+      return `${t.label} — ${timePart}`;
+    });
+    const text = header + timeLines.join('\n');
     navigator.clipboard.writeText(text).then(
       () => {
         const btn = copyWhatsAppBtn;
