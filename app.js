@@ -255,6 +255,15 @@
         alert("No times to copy.");
         return;
       }
+      const toMinutes = (value) => {
+        if (!value) return null;
+        const match = value.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+        if (!match) return null;
+        const h = Number(match[1]);
+        const m = Number(match[2]);
+        if (h < 0 || h > 23 || m < 0 || m > 59) return null;
+        return h * 60 + m;
+      };
       const flightCode = flightNumber ? flightNumber.value.trim() : "";
       const dateStr = flightDate ? formatDateForWhatsApp(flightDate.value) : "";
       const header = [
@@ -264,7 +273,17 @@
         "",
         "",
       ].join("\n");
-      const timeLines = times.map((t) => {
+      const sortedTimes = [...times].sort((a, b) => {
+        const aMinutes = toMinutes(a.value);
+        const bMinutes = toMinutes(b.value);
+        if (aMinutes === null && bMinutes === null) {
+          return a.label.localeCompare(b.label);
+        }
+        if (aMinutes === null) return 1;
+        if (bMinutes === null) return -1;
+        return aMinutes - bMinutes;
+      });
+      const timeLines = sortedTimes.map((t) => {
         const hasTime = t.value && /^\d{1,2}:\d{2}/.test(t.value);
         const timePart = hasTime ? formatTime(t.value) : "N/A";
         return `${t.label} — ${timePart}`;
