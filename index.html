@@ -2,9 +2,12 @@
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <title>AJet Follow Up Times</title>
-    <link rel="stylesheet" href="style.css?v=20260301a" />
+    <link rel="stylesheet" href="style.css?v=20260301b" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,7 +22,9 @@
       </header>
 
       <main class="main">
-        <div class="title-row d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <div
+          class="title-row d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3"
+        >
           <h1 class="title mb-0">
             AJet Follow Up <span class="title-en">/ Times</span>
           </h1>
@@ -30,7 +35,17 @@
             id="themeBtn"
             title="Toggle theme"
             aria-label="Toggle dark/light theme"
-            onclick="if(window.ajet&&window.ajet.toggleTheme){window.ajet.toggleTheme()}else{const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',t);}"
+            onclick="
+              if (window.ajet && window.ajet.toggleTheme) {
+                window.ajet.toggleTheme();
+              } else {
+                const t =
+                  document.documentElement.getAttribute('data-theme') === 'dark'
+                    ? 'light'
+                    : 'dark';
+                document.documentElement.setAttribute('data-theme', t);
+              }
+            "
           >
             <span class="theme-icon">🌙</span>
           </button>
@@ -61,26 +76,74 @@
 
         <div class="toolbar row g-2 mb-3">
           <div class="col-6 col-sm-auto actions">
-            <button type="button" class="btn btn-primary w-100 w-sm-auto" id="newBtn" onclick="if(window.ajet&&window.ajet.openModal){window.ajet.openModal()}else{const m=document.getElementById('timeModal');if(m&&m.showModal){m.showModal();}}">
+            <button
+              type="button"
+              class="btn btn-primary w-100 w-sm-auto"
+              id="newBtn"
+              onclick="
+                if (window.ajet && window.ajet.openModal) {
+                  window.ajet.openModal();
+                } else {
+                  const m = document.getElementById('timeModal');
+                  if (m && m.showModal) {
+                    m.showModal();
+                  }
+                }
+              "
+            >
               NEW
             </button>
           </div>
-          <div class="toolbar-divider d-none d-sm-block" aria-hidden="true"></div>
+          <div
+            class="toolbar-divider d-none d-sm-block"
+            aria-hidden="true"
+          ></div>
           <div class="col-6 col-sm-auto actions">
-            <button type="button" class="btn btn-secondary w-100 w-sm-auto" id="editBtn" onclick="if(window.ajet&&window.ajet.openModalEdit){window.ajet.openModalEdit()}else{alert('Please select a row first.')}">
+            <button
+              type="button"
+              class="btn btn-secondary w-100 w-sm-auto"
+              id="editBtn"
+              onclick="
+                if (window.ajet && window.ajet.openModalEdit) {
+                  window.ajet.openModalEdit();
+                } else {
+                  alert('Please select a row first.');
+                }
+              "
+            >
               EDIT
             </button>
           </div>
-          <div class="toolbar-divider d-none d-sm-block" aria-hidden="true"></div>
+          <div
+            class="toolbar-divider d-none d-sm-block"
+            aria-hidden="true"
+          ></div>
           <div class="col-12 col-sm actions">
             <div class="row g-2">
               <div class="col-6 col-sm-auto">
-                <button type="button" class="btn btn-secondary w-100" id="deleteBtn" onclick="if(window.ajet&&window.ajet.deleteSelected){if(confirm('Delete selected row(s)?')){window.ajet.deleteSelected()}}else{alert('Please select a row first.')}">
+                <button
+                  type="button"
+                  class="btn btn-secondary w-100"
+                  id="deleteBtn"
+                  onclick="
+                    if (window.ajet && window.ajet.deleteSelected) {
+                      if (confirm('Delete selected row(s)?')) {
+                        window.ajet.deleteSelected();
+                      }
+                    } else {
+                      alert('Please select a row first.');
+                    }
+                  "
+                >
                   DELETE
                 </button>
               </div>
               <div class="col-6 col-sm-auto">
-                <button type="button" class="btn btn-danger w-100" id="deleteAllBtn">
+                <button
+                  type="button"
+                  class="btn btn-danger w-100"
+                  id="deleteAllBtn"
+                >
                   DELETE ALL
                 </button>
               </div>
@@ -92,14 +155,39 @@
           <!-- Times rendered by JS -->
         </div>
 
+        <div class="extra-info mt-3">
+          <label for="additionalInfo" class="form-label">
+            Additional information
+          </label>
+          <textarea
+            id="additionalInfo"
+            class="form-control extra-info-input"
+            placeholder="Add any extra explanation to include at the end of copied text"
+            rows="3"
+          ></textarea>
+        </div>
+
         <p class="hint mt-3 mb-0" id="hint">
           Add times with NEW. Select a row to EDIT or DELETE. COPY WHATSAPP
           copies all times to share.
         </p>
-        <p class="hint mt-1 mb-0" id="jsStatus">JS status: loading...</p>
+        <p class="hint mt-1 mb-0" id="jsStatus" hidden>
+          JS status: loading...
+        </p>
 
         <div class="bottom-bar mt-4 pt-3">
-          <button type="button" class="btn btn-whatsapp w-100" id="copyWhatsAppBtn" onclick="if(window.ajet&&window.ajet.copyWhatsApp){window.ajet.copyWhatsApp()}else{alert('No times to copy.')}">
+          <button
+            type="button"
+            class="btn btn-whatsapp w-100"
+            id="copyWhatsAppBtn"
+            onclick="
+              if (window.ajet && window.ajet.copyWhatsApp) {
+                window.ajet.copyWhatsApp();
+              } else {
+                alert('No times to copy.');
+              }
+            "
+          >
             COPY WHATSAPP
           </button>
         </div>
@@ -117,15 +205,18 @@
             <option value="Arrived Airport">Arrived Airport</option>
             <option value="Leave Fly Wise">Leave Fly Wise</option>
             <option value="Arrived Aircraft">Arrived Aircraft</option>
-            <option value="Security Search Complete">Security Search Complete</option>
+            <option value="Security Search Complete">
+              Security Search Complete
+            </option>
             <option value="Boarding Start">Boarding Start</option>
             <option value="Boarding Done">Boarding Done</option>
             <option value="Door Close">Door Close</option>
             <option value="Bridge Off">Bridge Off</option>
+            <option value="Cargo Door Closed">Cargo Door Closed</option>
             <option value="Pushback Start">Pushback Start</option>
             <option value="Deice Start">Deice Start</option>
             <option value="Deice Complete">Deice Complete</option>
-            <option value="__custom__">Custom label...</option>
+            <option value="__custom__">Add a custom label...</option>
           </select>
           <input
             type="text"
@@ -173,6 +264,6 @@
       </form>
     </dialog>
 
-    <script src="app.js?v=20260301a"></script>
+    <script src="app.js?v=20260301b"></script>
   </body>
 </html>
