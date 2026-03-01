@@ -389,6 +389,15 @@ body {
   background: var(--accent-hover);
 }
 
+#newBtn {
+  background: #3b82f6;
+  color: #fff;
+}
+
+#newBtn:hover {
+  background: #2563eb;
+}
+
 .btn-secondary {
   background: var(--surface);
   color: var(--text);
