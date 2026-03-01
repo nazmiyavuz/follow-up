@@ -31,6 +31,7 @@
     const setUtcNowBtn = $("#setUtcNowBtn");
     const flightDate = $("#flightDate");
     const flightNumber = $("#flightNumber");
+    const additionalInfo = $("#additionalInfo");
     const jsStatus = $("#jsStatus");
     let utcUpdateInterval = null;
 
@@ -288,7 +289,11 @@
         const timePart = hasTime ? formatTime(t.value) : "N/A";
         return `${t.label} — ${timePart}`;
       });
-      const text = header + timeLines.join("\n");
+      const extraInfoText = additionalInfo ? additionalInfo.value.trim() : "";
+      const bodyText = header + timeLines.join("\n");
+      const text = extraInfoText
+        ? `${bodyText}\n\nADDITIONAL INFORMATION:\n${extraInfoText}`
+        : bodyText;
       navigator.clipboard.writeText(text).then(
         () => {
           const btn = copyWhatsAppBtn;
