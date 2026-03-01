@@ -256,6 +256,17 @@
         alert("No times to copy.");
         return;
       }
+      const openWhatsAppShare = (text) => {
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        const shareWindow = window.open(
+          whatsappUrl,
+          "_blank",
+          "noopener,noreferrer",
+        );
+        if (!shareWindow) {
+          alert("Copied. Please allow popups to open WhatsApp share.");
+        }
+      };
       const toMinutes = (value) => {
         if (!value) return null;
         const match = value.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
@@ -296,6 +307,7 @@
         : bodyText;
       navigator.clipboard.writeText(text).then(
         () => {
+          openWhatsAppShare(text);
           const btn = copyWhatsAppBtn;
           const orig = btn.textContent;
           btn.textContent = "Copied!";
