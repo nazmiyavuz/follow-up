@@ -28,7 +28,7 @@
     const modal = $("#timeModal");
     const form = $("#timeForm");
     const modalCancel = $("#modalCancel");
-    const timeLabel = $("#timeLabel");
+    const labelPicker = $("#labelPicker");
     const timeLabelCustom = $("#timeLabelCustom");
     const timeValue = $("#timeValue");
     const utcNowValue = $("#utcNowValue");
@@ -38,6 +38,42 @@
     const additionalInfo = $("#additionalInfo");
     const jsStatus = $("#jsStatus");
     let utcUpdateInterval = null;
+    let selectedLabelKey = "";
+    let labelPickerExpanded = true;
+
+    const CUSTOM_LABEL_KEY = "__custom__";
+    const LABEL_GROUPS = [
+      {
+        title: "Arrival",
+        labels: [
+          "Crew Pickup (Hotel)",
+          "Arrived to the Airport",
+          "Leave Fly Wise",
+          "Arrived to the Aircraft",
+        ],
+      },
+      {
+        title: "On ground",
+        labels: [
+          "Security Search Complete",
+          "Deboarding Complete",
+          "Boarding Start",
+          "Boarding Done",
+        ],
+      },
+      {
+        title: "Departure",
+        labels: [
+          "Door Close",
+          "Bridge Off",
+          "Cargo Door Closed",
+          "Pushback Start",
+          "Deice Start",
+          "Deice Complete",
+        ],
+      },
+    ];
+    const PRESET_LABELS = LABEL_GROUPS.flatMap((g) => g.labels);
 
     if (jsStatus) jsStatus.textContent = "JS status: ready";
 
@@ -132,42 +168,175 @@
     }
 
     function syncCustomLabelVisibility() {
-      if (!timeLabel || !timeLabelCustom) return;
-      const isCustom = timeLabel.value === "__custom__";
+      if (!timeLabelCustom) return;
+      const isCustom = selectedLabelKey === CUSTOM_LABEL_KEY;
       timeLabelCustom.classList.toggle("hidden", !isCustom);
       timeLabelCustom.hidden = !isCustom;
       timeLabelCustom.required = isCustom;
       if (!isCustom) timeLabelCustom.value = "";
     }
 
-    function getLabelValue() {
-      if (!timeLabel) return "";
-      if (timeLabel.value === "__custom__") {
-        return timeLabelCustom ? timeLabelCustom.value.trim() : "";
-      }
-      return timeLabel.value.trim();
+    function syncLabelPickerMode() {
+      if (!labelPicker) return;
+      const hasSelection = Boolean(selectedLabelKey);
+      const collapsed = hasSelection && !labelPickerExpanded;
+      labelPicker.classList.toggle("is-collapsed", collapsed);
+      labelPicker.classList.toggle("is-expanded", !collapsed);
     }
 
-    function setLabelValue(label) {
-      if (!timeLabel) return;
+    function updateCustomOptionLabel() {
+      if (!labelPicker) return;
+      const customBtn = $(
+        `.label-option[data-value="${CUSTOM_LABEL_KEY}"]`,
+        labelPicker,
+      );
+      if (!customBtn) return;
+      const customText =
+        timeLabelCustom && selectedLabelKey === CUSTOM_LABEL_KEY
+          ? timeLabelCustom.value.trim()
+          : "";
+      customBtn.textContent = customText || "Custom…";
+    }
+
+    function updateLabelPickerSelection() {
+      if (!labelPicker) return;
+      $$(".label-option", labelPicker).forEach((btn) => {
+        const isSelected = btn.dataset.value === selectedLabelKey;
+        btn.classList.toggle("is-selected", isSelected);
+        btn.setAttribute("aria-checked", isSelected ? "true" : "false");
+      });
+      updateCustomOptionLabel();
+      syncCustomLabelVisibility();
+      syncLabelPickerMode();
+    }
+
+    function selectLabelKey(key, { focusCustom = false, expand = false } = {}) {
+      selectedLabelKey = key || "";
+      if (!selectedLabelKey) {
+        labelPickerExpanded = true;
+      } else if (expand) {
+        labelPickerExpanded = true;
+      } else {
+        labelPickerExpanded = false;
+      }
+      updateLabelPickerSelection();
+      if (
+        focusCustom &&
+        selectedLabelKey === CUSTOM_LABEL_KEY &&
+        timeLabelCustom
+      ) {
+        timeLabelCustom.focus();
+      }
+    }
+
+    function getLabelValue() {
+      if (selectedLabelKey === CUSTOM_LABEL_KEY) {
+        return timeLabelCustom ? timeLabelCustom.value.trim() : "";
+      }
+      return (selectedLabelKey || "").trim();
+    }
+
+    function setLabelValue(label, { expand = false } = {}) {
       const normalized = (label || "").trim();
       if (!normalized) {
-        timeLabel.value = "";
+        selectLabelKey("", { expand: true });
         if (timeLabelCustom) timeLabelCustom.value = "";
-        syncCustomLabelVisibility();
         return;
       }
-      const hasPreset = [...timeLabel.options].some(
-        (opt) => opt.value === normalized,
-      );
-      if (hasPreset) {
-        timeLabel.value = normalized;
+      if (PRESET_LABELS.includes(normalized)) {
+        selectLabelKey(normalized, { expand });
         if (timeLabelCustom) timeLabelCustom.value = "";
-      } else {
-        timeLabel.value = "__custom__";
-        if (timeLabelCustom) timeLabelCustom.value = normalized;
+        return;
       }
-      syncCustomLabelVisibility();
+      selectLabelKey(CUSTOM_LABEL_KEY, { expand });
+      if (timeLabelCustom) timeLabelCustom.value = normalized;
+      updateCustomOptionLabel();
+    }
+
+    function applySectionOpenState(openTitles) {
+      if (!labelPicker) return;
+      const openSet = new Set(openTitles);
+      $$(".label-group[data-group]", labelPicker).forEach((group) => {
+        const title = group.dataset.group || "";
+        const isOpen = openSet.has(title);
+        group.classList.toggle("is-section-collapsed", !isOpen);
+        const toggle = $(".label-group-toggle", group);
+        if (toggle)
+          toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      });
+    }
+
+    function openSectionForLabel(labelKey) {
+      if (!labelKey || labelKey === CUSTOM_LABEL_KEY) {
+        applySectionOpenState(["On ground", "Departure"]);
+        return;
+      }
+      const group = LABEL_GROUPS.find((g) => g.labels.includes(labelKey));
+      if (group) applySectionOpenState([group.title]);
+      else applySectionOpenState(["On ground", "Departure"]);
+    }
+
+    function applyNewSectionDefaults() {
+      applySectionOpenState(["On ground", "Departure"]);
+      if (labelPicker) labelPicker.scrollTop = 0;
+    }
+
+    function renderLabelPicker() {
+      if (!labelPicker) return;
+      const parts = LABEL_GROUPS.map((group) => {
+        const options = group.labels
+          .map(
+            (label) => `
+          <button
+            type="button"
+            class="label-option"
+            role="radio"
+            data-value="${escapeHtml(label)}"
+            aria-checked="false"
+          >${escapeHtml(label)}</button>`,
+          )
+          .join("");
+        const optionsId = `label-group-${group.title.toLowerCase().replace(/\s+/g, "-")}`;
+        return `
+        <div class="label-group" data-group="${escapeHtml(group.title)}">
+          <button
+            type="button"
+            class="label-group-toggle"
+            aria-expanded="true"
+            aria-controls="${optionsId}"
+          >
+            <span class="label-group-title-text">${escapeHtml(group.title)}</span>
+            <span class="label-group-chevron" aria-hidden="true"></span>
+          </button>
+          <div class="label-group-options" id="${optionsId}">${options}</div>
+        </div>`;
+      });
+      parts.push(`
+        <div class="label-group label-group-custom">
+          <div class="label-group-options">
+            <button
+              type="button"
+              class="label-option label-option-custom"
+              role="radio"
+              data-value="${CUSTOM_LABEL_KEY}"
+              aria-checked="false"
+            >Custom…</button>
+          </div>
+        </div>`);
+      labelPicker.innerHTML = parts.join("");
+      applyNewSectionDefaults();
+      updateLabelPickerSelection();
+    }
+
+    function focusTimeInput() {
+      if (!timeValue) return;
+      timeValue.focus();
+      const len = timeValue.value.length;
+      try {
+        timeValue.setSelectionRange(len, len);
+      } catch (_) {
+        /* some input types may not support selection */
+      }
     }
 
     function openModal(id = null) {
@@ -175,20 +344,36 @@
       editingId = id;
       const item = id ? times.find((t) => t.id === id) : null;
       const isEditing = Boolean(item);
-      setLabelValue(item ? item.label : "");
+      if (isEditing) {
+        setLabelValue(item.label, { expand: false });
+      } else {
+        setLabelValue("");
+      }
       if (timeValue) timeValue.value = item ? item.value : "";
       const titleEl = $(".modal-title", modal);
       if (titleEl) titleEl.textContent = isEditing ? "Edit time" : "New time";
 
+      if (isEditing && timeValue) timeValue.setAttribute("autofocus", "");
       modal.showModal();
+      if (timeValue) timeValue.removeAttribute("autofocus");
+
       updateUtcDisplay();
       if (utcUpdateInterval) clearInterval(utcUpdateInterval);
       utcUpdateInterval = setInterval(updateUtcDisplay, 1000);
-      // Editing: show label but focus time so the label picker does not open first.
+
       if (isEditing) {
-        if (timeValue) timeValue.focus();
-      } else if (timeLabel) {
-        timeLabel.focus();
+        openSectionForLabel(
+          PRESET_LABELS.includes(item.label) ? item.label : CUSTOM_LABEL_KEY,
+        );
+        focusTimeInput();
+        requestAnimationFrame(focusTimeInput);
+      } else {
+        applyNewSectionDefaults();
+        // Dialog focuses the first control (Arrival); clear it so no focus ring shows.
+        const active = document.activeElement;
+        if (active && labelPicker && labelPicker.contains(active)) {
+          active.blur();
+        }
       }
     }
 
@@ -268,8 +453,7 @@
       const hasTimes = times.length > 0;
       const hasFlightNumber =
         flightNumber && flightNumber.value.trim() !== "VF";
-      const hasExtraInfo =
-        additionalInfo && additionalInfo.value.trim() !== "";
+      const hasExtraInfo = additionalInfo && additionalInfo.value.trim() !== "";
       if (!hasTimes && !hasFlightNumber && !hasExtraInfo) {
         alert("Nothing to reset.");
         return;
@@ -358,7 +542,7 @@
       const extraInfoText = additionalInfo ? additionalInfo.value.trim() : "";
       const bodyText = header + timeLines.join("\n");
       const text = extraInfoText
-        ? `${bodyText}\n\nADDITIONAL INFORMATION:\n${extraInfoText}`
+        ? `${bodyText}\n\n\nADDITIONAL INFO:\n\n${extraInfoText}`
         : bodyText;
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
 
@@ -573,15 +757,36 @@
     }
 
     if (modalCancel) modalCancel.addEventListener("click", closeModal);
-    if (timeLabel) {
-      const handleLabelSelection = () => {
-        syncCustomLabelVisibility();
-        if (timeLabel.value === "__custom__" && timeLabelCustom) {
-          timeLabelCustom.focus();
+    if (labelPicker) {
+      labelPicker.addEventListener("click", (e) => {
+        const toggle = e.target.closest(".label-group-toggle");
+        if (toggle && labelPicker.contains(toggle)) {
+          const group = toggle.closest(".label-group");
+          if (!group) return;
+          const willOpen = group.classList.contains("is-section-collapsed");
+          group.classList.toggle("is-section-collapsed", !willOpen);
+          toggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
+          return;
         }
-      };
-      timeLabel.addEventListener("change", handleLabelSelection);
-      timeLabel.addEventListener("input", handleLabelSelection);
+
+        const btn = e.target.closest(".label-option");
+        if (!btn || !labelPicker.contains(btn)) return;
+        const value = btn.dataset.value || "";
+        const collapsed =
+          labelPicker.classList.contains("is-collapsed") &&
+          Boolean(selectedLabelKey);
+        if (collapsed && value === selectedLabelKey) {
+          labelPickerExpanded = true;
+          openSectionForLabel(value);
+          updateLabelPickerSelection();
+          return;
+        }
+        selectLabelKey(value, { focusCustom: true });
+        if (value !== CUSTOM_LABEL_KEY) focusTimeInput();
+      });
+    }
+    if (timeLabelCustom) {
+      timeLabelCustom.addEventListener("input", updateCustomOptionLabel);
     }
     if (setUtcNowBtn)
       setUtcNowBtn.addEventListener("click", () => {
@@ -616,7 +821,7 @@
 
     loadTheme();
     loadTimes();
-    syncCustomLabelVisibility();
+    renderLabelPicker();
     if (flightDate) flightDate.value = getUtcDateString();
     if (flightNumber) flightNumber.value = "VF ";
     render();
