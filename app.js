@@ -168,15 +168,22 @@
       if (!modal) return;
       editingId = id;
       const item = id ? times.find((t) => t.id === id) : null;
+      const isEditing = Boolean(item);
       setLabelValue(item ? item.label : "");
       if (timeValue) timeValue.value = item ? item.value : "";
       const titleEl = $(".modal-title", modal);
-      if (titleEl) titleEl.textContent = item ? "Edit time" : "New time";
+      if (titleEl) titleEl.textContent = isEditing ? "Edit time" : "New time";
+
       modal.showModal();
       updateUtcDisplay();
       if (utcUpdateInterval) clearInterval(utcUpdateInterval);
       utcUpdateInterval = setInterval(updateUtcDisplay, 1000);
-      if (timeLabel) timeLabel.focus();
+      // Editing: show label but focus time so the label picker does not open first.
+      if (isEditing) {
+        if (timeValue) timeValue.focus();
+      } else if (timeLabel) {
+        timeLabel.focus();
+      }
     }
 
     function closeModal() {
