@@ -656,11 +656,11 @@ body {
   background: var(--border);
 }
 
-.time-row:nth-child(even) {
+.time-row:nth-child(even):not(.selected) {
   background: var(--row-alt);
 }
 
-.time-row:hover {
+.time-row:hover:not(.selected) {
   background: rgba(0, 122, 255, 0.08);
 }
 
@@ -935,7 +935,7 @@ body {
     background: #1c1c1e;
   }
 
-  .time-row:nth-child(even) {
+  .time-row:nth-child(even):not(.selected) {
     background: transparent;
   }
 
