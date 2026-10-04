@@ -261,7 +261,8 @@
         const isOpen = openSet.has(title);
         group.classList.toggle("is-section-collapsed", !isOpen);
         const toggle = $(".label-group-toggle", group);
-        if (toggle) toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        if (toggle)
+          toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
       });
     }
 

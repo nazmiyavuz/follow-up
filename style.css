@@ -812,43 +812,47 @@ body {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin: 0 0 0.35rem;
-  padding: 0.35rem 0.15rem;
+  margin: 0 0 0.4rem;
+  padding: 0.4rem 0.5rem;
   border: none;
-  background: transparent;
-  color: var(--text-muted);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--text) 6%, var(--bg));
+  color: var(--text);
   font-family: var(--font-sans);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   cursor: pointer;
-  min-height: 32px;
+  min-height: 34px;
 }
 
 .label-group-toggle:hover {
-  color: color-mix(in srgb, var(--text-muted) 70%, var(--text));
+  background: color-mix(in srgb, var(--text) 10%, var(--bg));
+  color: var(--text);
 }
 
 .label-group-toggle:focus,
 .label-group-toggle:focus-visible {
-  color: var(--text-muted);
+  color: var(--text);
   outline: none;
-  box-shadow: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 .label-group.is-section-collapsed .label-group-toggle {
-  color: var(--text-muted);
+  color: color-mix(in srgb, var(--text) 78%, var(--text-muted));
+  background: color-mix(in srgb, var(--text) 4%, var(--bg));
 }
 
 .label-group-chevron {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-right: 1.5px solid currentColor;
-  border-bottom: 1.5px solid currentColor;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
   transform: rotate(45deg);
   transition: transform 0.15s ease;
-  margin-right: 0.2rem;
+  margin-right: 0.15rem;
+  opacity: 0.75;
 }
 
 .label-group.is-section-collapsed .label-group-chevron {
