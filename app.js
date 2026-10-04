@@ -240,13 +240,21 @@
     }
 
     function deleteAll() {
-      if (times.length === 0) {
-        alert("No times to delete.");
+      const hasTimes = times.length > 0;
+      const hasFlightNumber =
+        flightNumber && flightNumber.value.trim() !== "VF";
+      const hasExtraInfo =
+        additionalInfo && additionalInfo.value.trim() !== "";
+      if (!hasTimes && !hasFlightNumber && !hasExtraInfo) {
+        alert("Nothing to remove.");
         return;
       }
-      if (!confirm("Delete all times? This cannot be undone.")) return;
+      if (!confirm("Remove all times, flight number, and additional information? This cannot be undone."))
+        return;
       times = [];
       selectedIds.clear();
+      if (flightNumber) flightNumber.value = "VF ";
+      if (additionalInfo) additionalInfo.value = "";
       saveTimes();
       render();
     }
