@@ -307,31 +307,13 @@
       <form class="modal-form" id="timeForm">
         <h2 class="modal-title">New time</h2>
         <div class="field">
-          <label for="timeLabel">Label</label>
-          <select id="timeLabel" required>
-            <option value="" disabled selected>Select label</option>
-            <option value="Crew Pickup (Hotel)">Crew Pickup (Hotel)</option>
-            <option value="Arrived to the Airport">
-              Arrived to the Airport
-            </option>
-            <option value="Leave Fly Wise">Leave Fly Wise</option>
-            <option value="Arrived to the Aircraft">
-              Arrived to the Aircraft
-            </option>
-            <option value="Security Search Complete">
-              Security Search Complete
-            </option>
-            <option value="Deboarding Complete">Deboarding Complete</option>
-            <option value="Boarding Start">Boarding Start</option>
-            <option value="Boarding Done">Boarding Done</option>
-            <option value="Door Close">Door Close</option>
-            <option value="Bridge Off">Bridge Off</option>
-            <option value="Cargo Door Closed">Cargo Door Closed</option>
-            <option value="Pushback Start">Pushback Start</option>
-            <option value="Deice Start">Deice Start</option>
-            <option value="Deice Complete">Deice Complete</option>
-            <option value="__custom__">Add a custom label...</option>
-          </select>
+          <span class="form-label" id="labelPickerLabel">Label</span>
+          <div
+            id="labelPicker"
+            class="label-picker"
+            role="radiogroup"
+            aria-labelledby="labelPickerLabel"
+          ></div>
           <input
             type="text"
             id="timeLabelCustom"

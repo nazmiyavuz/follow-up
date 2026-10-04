@@ -759,7 +759,8 @@ body {
   margin-bottom: 1rem;
 }
 
-.field label {
+.field label,
+.field .form-label {
   display: block;
   font-size: 0.85rem;
   font-weight: 500;
@@ -767,8 +768,7 @@ body {
   color: var(--text-muted);
 }
 
-.field input,
-.field select {
+.field input {
   width: 100%;
   padding: 0.6rem 0.75rem;
   font-family: var(--font-sans);
@@ -779,18 +779,135 @@ body {
   color: var(--text);
 }
 
-.field select {
-  -webkit-appearance: none;
-  appearance: none;
-  padding-right: 2rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%235c5a54' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.7rem center;
-  background-size: 0.7rem auto;
+.label-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  max-height: 42vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.1rem 0.05rem 0.15rem;
 }
 
-[data-theme="dark"] .field select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239a9892' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+.label-picker.is-collapsed {
+  max-height: none;
+  overflow: visible;
+  gap: 0;
+}
+
+.label-picker.is-collapsed .label-group-toggle {
+  display: none;
+}
+
+.label-picker.is-collapsed .label-group:not(:has(.label-option.is-selected)) {
+  display: none;
+}
+
+.label-picker.is-collapsed .label-option:not(.is-selected) {
+  display: none;
+}
+
+.label-group-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0 0 0.35rem;
+  padding: 0.35rem 0.15rem;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-height: 32px;
+}
+
+.label-group-toggle:hover {
+  color: color-mix(in srgb, var(--text-muted) 70%, var(--text));
+}
+
+.label-group-toggle:focus,
+.label-group-toggle:focus-visible {
+  color: var(--text-muted);
+  outline: none;
+  box-shadow: none;
+}
+
+.label-group.is-section-collapsed .label-group-toggle {
+  color: var(--text-muted);
+}
+
+.label-group-chevron {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.15s ease;
+  margin-right: 0.2rem;
+}
+
+.label-group.is-section-collapsed .label-group-chevron {
+  transform: rotate(-45deg);
+}
+
+.label-group.is-section-collapsed .label-group-options {
+  display: none;
+}
+
+.label-group-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.label-option {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  min-height: 34px;
+}
+
+.label-option:hover,
+.label-option:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg));
+  outline: none;
+}
+
+.label-option.is-selected {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.label-picker.is-collapsed .label-option.is-selected {
+  padding-right: 0.85rem;
+}
+
+.label-option-custom {
+  color: var(--text-muted);
+  border-style: dashed;
+}
+
+.label-option-custom.is-selected {
+  color: #fff;
+  border-style: solid;
 }
 
 .custom-label-input {
@@ -801,8 +918,7 @@ body {
   display: none !important;
 }
 
-.field input:focus,
-.field select:focus {
+.field input:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.25);
