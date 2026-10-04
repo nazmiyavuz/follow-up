@@ -13,7 +13,12 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#0a84ff" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png" />
+    <link
+      rel="icon"
+      href="icons/favicon-32.png"
+      sizes="32x32"
+      type="image/png"
+    />
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <link rel="stylesheet" href="style.css?v=20261004j" />
@@ -59,7 +64,8 @@
                   window.ajet.toggleTheme();
                 } else {
                   const t =
-                    document.documentElement.getAttribute('data-theme') === 'dark'
+                    document.documentElement.getAttribute('data-theme') ===
+                    'dark'
                       ? 'light'
                       : 'dark';
                   document.documentElement.setAttribute('data-theme', t);
@@ -212,12 +218,7 @@
                 >
                   <span class="more-icon" aria-hidden="true">⋯</span>
                 </button>
-                <div
-                  class="actions-menu"
-                  id="actionsMenu"
-                  role="menu"
-                  hidden
-                >
+                <div class="actions-menu" id="actionsMenu" role="menu" hidden>
                   <button
                     type="button"
                     class="actions-menu-item"
@@ -310,12 +311,17 @@
           <select id="timeLabel" required>
             <option value="" disabled selected>Select label</option>
             <option value="Crew Pickup (Hotel)">Crew Pickup (Hotel)</option>
-            <option value="Arrived Airport">Arrived Airport</option>
+            <option value="Arrived to the Airport">
+              Arrived to the Airport
+            </option>
             <option value="Leave Fly Wise">Leave Fly Wise</option>
-            <option value="Arrived Aircraft">Arrived Aircraft</option>
+            <option value="Arrived to the Aircraft">
+              Arrived to the Aircraft
+            </option>
             <option value="Security Search Complete">
               Security Search Complete
             </option>
+            <option value="Deboarding Complete">Deboarding Complete</option>
             <option value="Boarding Start">Boarding Start</option>
             <option value="Boarding Done">Boarding Done</option>
             <option value="Door Close">Door Close</option>
