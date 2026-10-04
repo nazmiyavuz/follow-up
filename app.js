@@ -297,22 +297,31 @@
       additionalInfo.style.height = `${additionalInfo.scrollHeight}px`;
     }
 
+    function copyTextSync(text) {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        return ok;
+      } catch (_) {
+        return false;
+      }
+    }
+
     function copyWhatsApp() {
+      const isMobile = window.matchMedia("(max-width: 767.98px)").matches;
       if (times.length === 0) {
         alert("No times to copy.");
         return;
       }
-      const openWhatsAppShare = (text) => {
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-        const shareWindow = window.open(
-          whatsappUrl,
-          "_blank",
-          "noopener,noreferrer",
-        );
-        if (!shareWindow) {
-          alert("Copied. Please allow popups to open WhatsApp share.");
-        }
-      };
       const toMinutes = (value) => {
         if (!value) return null;
         const match = value.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
@@ -351,22 +360,51 @@
       const text = extraInfoText
         ? `${bodyText}\n\nADDITIONAL INFORMATION:\n${extraInfoText}`
         : bodyText;
-      navigator.clipboard.writeText(text).then(
-        () => {
-          openWhatsAppShare(text);
-          const isMobile = window.matchMedia("(max-width: 767.98px)").matches;
-          const btn = isMobile ? copyWhatsAppBtn : copyWhatsAppBtnDesktop;
-          if (!btn) return;
-          const orig = btn.textContent;
-          btn.textContent = "Copied!";
-          btn.disabled = true;
-          setTimeout(() => {
-            btn.textContent = orig;
-            updateButtons();
-          }, 1500);
-        },
-        () => alert("Could not copy to clipboard"),
-      );
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+      // LAN HTTP (Live Server on phone) is not a secure context, so
+      // navigator.clipboard is unavailable. Use sync fallback, then open WA
+      // in the same user-gesture turn (critical on mobile).
+      let copied = false;
+      if (
+        window.isSecureContext &&
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+      ) {
+        // Fire-and-forget async copy; do not gate WhatsApp on it.
+        navigator.clipboard.writeText(text).then(
+          () => {},
+          () => {},
+        );
+        copied = true;
+      } else {
+        copied = copyTextSync(text);
+      }
+
+      const btn = isMobile ? copyWhatsAppBtn : copyWhatsAppBtnDesktop;
+      if (btn && copied) {
+        const orig = btn.textContent;
+        btn.textContent = "Copied!";
+        btn.disabled = true;
+        setTimeout(() => {
+          btn.textContent = orig;
+          updateButtons();
+        }, 1500);
+      }
+
+      if (isMobile) {
+        window.location.href = whatsappUrl;
+        return;
+      }
+
+      const shareWindow = window.open(whatsappUrl, "_blank");
+      if (!shareWindow) {
+        alert(
+          copied
+            ? "Copied. Please allow popups to open WhatsApp share."
+            : "Could not open WhatsApp. Text may not have been copied.",
+        );
+      }
     }
 
     function closeActionsMenu() {
