@@ -20,6 +20,7 @@
     const editBtn = $("#editBtn");
     const deleteBtn = $("#deleteBtn");
     const deleteAllBtn = $("#deleteAllBtn");
+    const newFlightBtn = $("#newFlightBtn");
     const copyWhatsAppBtn = $("#copyWhatsAppBtn");
     const modal = $("#timeModal");
     const form = $("#timeForm");
@@ -123,6 +124,7 @@
       if (deleteBtn) deleteBtn.disabled = false;
       if (copyWhatsAppBtn) copyWhatsAppBtn.disabled = false;
       if (deleteAllBtn) deleteAllBtn.disabled = false;
+      if (newFlightBtn) newFlightBtn.disabled = false;
     }
 
     function syncCustomLabelVisibility() {
@@ -247,16 +249,32 @@
     }
 
     function deleteAll() {
+      if (times.length === 0) {
+        alert("Nothing to delete.");
+        return;
+      }
+      if (!confirm("Delete all times? This cannot be undone.")) return;
+      times = [];
+      selectedIds.clear();
+      saveTimes();
+      render();
+    }
+
+    function newFlight() {
       const hasTimes = times.length > 0;
       const hasFlightNumber =
         flightNumber && flightNumber.value.trim() !== "VF";
       const hasExtraInfo =
         additionalInfo && additionalInfo.value.trim() !== "";
       if (!hasTimes && !hasFlightNumber && !hasExtraInfo) {
-        alert("Nothing to remove.");
+        alert("Nothing to reset.");
         return;
       }
-      if (!confirm("Remove all times, flight number, and additional information? This cannot be undone."))
+      if (
+        !confirm(
+          "Start a new flight? This clears all times, the flight number, and additional information.",
+        )
+      )
         return;
       times = [];
       selectedIds.clear();
@@ -347,6 +365,7 @@
       },
       deleteSelected: deleteSelected,
       deleteAll: deleteAll,
+      newFlight: newFlight,
       copyWhatsApp: copyWhatsApp,
       toggleTheme: toggleTheme,
     };
@@ -367,6 +386,7 @@
           "editBtn",
           "deleteBtn",
           "deleteAllBtn",
+          "newFlightBtn",
           "copyWhatsAppBtn",
           "themeBtn",
         ]);
@@ -388,6 +408,9 @@
             break;
           case "deleteAllBtn":
             deleteAll();
+            break;
+          case "newFlightBtn":
+            newFlight();
             break;
           case "copyWhatsAppBtn":
             copyWhatsApp();

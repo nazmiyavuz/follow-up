@@ -242,6 +242,12 @@ body {
 /* ----- Filters row (date + flight number) ----- */
 .filters-row {
   margin-bottom: 0;
+  align-items: flex-end;
+}
+
+.filters-action .btn {
+  min-height: 44px;
+  white-space: nowrap;
 }
 
 .filters-row .field-inline {
