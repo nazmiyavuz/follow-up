@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="tr">
+<html lang="tr" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -7,7 +7,16 @@
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <title>AJet Follow Up Times</title>
-    <link rel="stylesheet" href="style.css?v=20260301b" />
+    <meta name="application-name" content="Follow Up" />
+    <meta name="apple-mobile-web-app-title" content="Follow Up" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#0a84ff" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="style.css?v=20261004j" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -23,36 +32,47 @@
 
       <main class="main">
         <div
-          class="title-row d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3"
+          class="title-row d-flex align-items-center justify-content-between gap-2 mb-3"
         >
           <h1 class="title mb-0">
             AJet Follow Up <span class="title-en">/ Times</span>
           </h1>
 
-          <button
-            type="button"
-            class="btn theme-btn"
-            id="themeBtn"
-            title="Toggle theme"
-            aria-label="Toggle dark/light theme"
-            onclick="
-              if (window.ajet && window.ajet.toggleTheme) {
-                window.ajet.toggleTheme();
-              } else {
-                const t =
-                  document.documentElement.getAttribute('data-theme') === 'dark'
-                    ? 'light'
-                    : 'dark';
-                document.documentElement.setAttribute('data-theme', t);
-              }
-            "
-          >
-            <span class="theme-icon">🌙</span>
-          </button>
+          <div class="title-actions">
+            <button
+              type="button"
+              class="btn info-btn"
+              id="howToUseBtn"
+              title="How to use this screen"
+              aria-label="How to use this screen"
+            >
+              <span class="info-icon" aria-hidden="true">!</span>
+            </button>
+            <button
+              type="button"
+              class="btn theme-btn"
+              id="themeBtn"
+              title="Toggle theme"
+              aria-label="Toggle dark/light theme"
+              onclick="
+                if (window.ajet && window.ajet.toggleTheme) {
+                  window.ajet.toggleTheme();
+                } else {
+                  const t =
+                    document.documentElement.getAttribute('data-theme') === 'dark'
+                      ? 'light'
+                      : 'dark';
+                  document.documentElement.setAttribute('data-theme', t);
+                }
+              "
+            >
+              <span class="theme-icon">🌙</span>
+            </button>
+          </div>
         </div>
 
         <div class="filters-row row g-2 g-md-3 mb-3">
-          <div class="field-inline col-12 col-sm-6 col-md">
+          <div class="field-inline col-6 col-md">
             <label for="flightDate" class="form-label">Date</label>
             <input
               type="date"
@@ -61,7 +81,7 @@
               aria-label="Flight date"
             />
           </div>
-          <div class="field-inline col-12 col-sm-6 col-md">
+          <div class="field-inline col-6 col-md">
             <label for="flightNumber" class="form-label">Flight number</label>
             <input
               type="text"
@@ -71,6 +91,16 @@
               aria-label="Flight number"
               autocomplete="off"
             />
+          </div>
+          <div class="col-12 col-sm-auto filters-action desktop-only">
+            <button
+              type="button"
+              class="btn btn-secondary w-100"
+              id="newFlightBtn"
+              title="Clear times and start a new flight"
+            >
+              RESET FLIGHT
+            </button>
           </div>
         </div>
 
@@ -151,8 +181,83 @@
           </div>
         </div>
 
-        <div class="times-list" id="timesList">
-          <!-- Times rendered by JS -->
+        <div class="times-section">
+          <div class="times-header mobile-only">
+            <h2 class="times-header-title">Times</h2>
+            <div class="times-header-actions">
+              <button
+                type="button"
+                class="btn btn-whatsapp times-whatsapp-btn"
+                id="copyWhatsAppBtn"
+                onclick="
+                  if (window.ajet && window.ajet.copyWhatsApp) {
+                    window.ajet.copyWhatsApp();
+                  } else {
+                    alert('No times to copy.');
+                  }
+                "
+              >
+                COPY WHATSAPP
+              </button>
+              <div class="more-menu-wrap">
+                <button
+                  type="button"
+                  class="btn more-btn"
+                  id="moreBtn"
+                  title="Edit or delete times"
+                  aria-label="Edit or delete times"
+                  aria-haspopup="menu"
+                  aria-expanded="false"
+                  aria-controls="actionsMenu"
+                >
+                  <span class="more-icon" aria-hidden="true">⋯</span>
+                </button>
+                <div
+                  class="actions-menu"
+                  id="actionsMenu"
+                  role="menu"
+                  hidden
+                >
+                  <button
+                    type="button"
+                    class="actions-menu-item"
+                    id="menuEditBtn"
+                    role="menuitem"
+                  >
+                    Edit selected
+                  </button>
+                  <button
+                    type="button"
+                    class="actions-menu-item"
+                    id="menuDeleteBtn"
+                    role="menuitem"
+                  >
+                    Delete selected
+                  </button>
+                  <button
+                    type="button"
+                    class="actions-menu-item actions-menu-item-danger"
+                    id="menuDeleteAllBtn"
+                    role="menuitem"
+                  >
+                    Delete all times
+                  </button>
+                  <button
+                    type="button"
+                    class="actions-menu-item"
+                    id="menuResetFlightBtn"
+                    role="menuitem"
+                  >
+                    Reset flight
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="times-list" id="timesList">
+            <!-- Times rendered by JS -->
+          </div>
         </div>
 
         <div class="extra-info mt-3">
@@ -167,19 +272,13 @@
           ></textarea>
         </div>
 
-        <p class="hint mt-3 mb-0" id="hint">
-          Add times with NEW. Select a row to EDIT or DELETE. COPY WHATSAPP
-          copies all times to share.
-        </p>
-        <p class="hint mt-1 mb-0" id="jsStatus" hidden>
-          JS status: loading...
-        </p>
+        <p class="hint mt-1 mb-0" id="jsStatus" hidden>JS status: loading...</p>
 
-        <div class="bottom-bar mt-4 pt-3">
+        <div class="bottom-bar mt-4 pt-3 desktop-only">
           <button
             type="button"
             class="btn btn-whatsapp w-100"
-            id="copyWhatsAppBtn"
+            id="copyWhatsAppBtnDesktop"
             onclick="
               if (window.ajet && window.ajet.copyWhatsApp) {
                 window.ajet.copyWhatsApp();
@@ -192,6 +291,15 @@
           </button>
         </div>
       </main>
+
+      <button
+        type="button"
+        class="fab-new mobile-only"
+        id="fabNewBtn"
+        aria-label="New time"
+      >
+        + NEW
+      </button>
     </div>
 
     <dialog class="modal" id="timeModal">
@@ -264,6 +372,6 @@
       </form>
     </dialog>
 
-    <script src="app.js?v=20260301b"></script>
+    <script src="app.js?v=20261004p"></script>
   </body>
 </html>

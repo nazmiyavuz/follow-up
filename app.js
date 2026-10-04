@@ -3,7 +3,7 @@
 
   function init() {
     const STORAGE_KEY = "ajet-times";
-    const THEME_KEY = "ajet-theme";
+    const THEME_KEY = "ajet-theme-ios";
 
     let times = [];
     let selectedIds = new Set();
@@ -20,7 +20,11 @@
     const editBtn = $("#editBtn");
     const deleteBtn = $("#deleteBtn");
     const deleteAllBtn = $("#deleteAllBtn");
+    const moreBtn = $("#moreBtn");
+    const actionsMenu = $("#actionsMenu");
+    const newFlightBtn = $("#newFlightBtn");
     const copyWhatsAppBtn = $("#copyWhatsAppBtn");
+    const copyWhatsAppBtnDesktop = $("#copyWhatsAppBtnDesktop");
     const modal = $("#timeModal");
     const form = $("#timeForm");
     const modalCancel = $("#modalCancel");
@@ -59,7 +63,7 @@
     }
 
     function loadTheme() {
-      const theme = localStorage.getItem(THEME_KEY) || "light";
+      const theme = localStorage.getItem(THEME_KEY) || "dark";
       document.documentElement.setAttribute("data-theme", theme);
       if (themeIcon) themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
     }
@@ -122,7 +126,9 @@
       if (editBtn) editBtn.disabled = false;
       if (deleteBtn) deleteBtn.disabled = false;
       if (copyWhatsAppBtn) copyWhatsAppBtn.disabled = false;
+      if (copyWhatsAppBtnDesktop) copyWhatsAppBtnDesktop.disabled = false;
       if (deleteAllBtn) deleteAllBtn.disabled = false;
+      if (newFlightBtn) newFlightBtn.disabled = false;
     }
 
     function syncCustomLabelVisibility() {
@@ -168,15 +174,22 @@
       if (!modal) return;
       editingId = id;
       const item = id ? times.find((t) => t.id === id) : null;
+      const isEditing = Boolean(item);
       setLabelValue(item ? item.label : "");
       if (timeValue) timeValue.value = item ? item.value : "";
       const titleEl = $(".modal-title", modal);
-      if (titleEl) titleEl.textContent = item ? "Edit time" : "New time";
+      if (titleEl) titleEl.textContent = isEditing ? "Edit time" : "New time";
+
       modal.showModal();
       updateUtcDisplay();
       if (utcUpdateInterval) clearInterval(utcUpdateInterval);
       utcUpdateInterval = setInterval(updateUtcDisplay, 1000);
-      if (timeLabel) timeLabel.focus();
+      // Editing: show label but focus time so the label picker does not open first.
+      if (isEditing) {
+        if (timeValue) timeValue.focus();
+      } else if (timeLabel) {
+        timeLabel.focus();
+      }
     }
 
     function closeModal() {
@@ -241,7 +254,7 @@
 
     function deleteAll() {
       if (times.length === 0) {
-        alert("No times to delete.");
+        alert("Nothing to delete.");
         return;
       }
       if (!confirm("Delete all times? This cannot be undone.")) return;
@@ -251,22 +264,64 @@
       render();
     }
 
+    function newFlight() {
+      const hasTimes = times.length > 0;
+      const hasFlightNumber =
+        flightNumber && flightNumber.value.trim() !== "VF";
+      const hasExtraInfo =
+        additionalInfo && additionalInfo.value.trim() !== "";
+      if (!hasTimes && !hasFlightNumber && !hasExtraInfo) {
+        alert("Nothing to reset.");
+        return;
+      }
+      if (
+        !confirm(
+          "Start a new flight? This clears all times, the flight number, and additional information.",
+        )
+      )
+        return;
+      times = [];
+      selectedIds.clear();
+      if (flightNumber) flightNumber.value = "VF ";
+      if (additionalInfo) {
+        additionalInfo.value = "";
+        autoResizeAdditionalInfo();
+      }
+      saveTimes();
+      render();
+    }
+
+    function autoResizeAdditionalInfo() {
+      if (!additionalInfo) return;
+      additionalInfo.style.height = "auto";
+      additionalInfo.style.height = `${additionalInfo.scrollHeight}px`;
+    }
+
+    function copyTextSync(text) {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        return ok;
+      } catch (_) {
+        return false;
+      }
+    }
+
     function copyWhatsApp() {
+      const isMobile = window.matchMedia("(max-width: 767.98px)").matches;
       if (times.length === 0) {
         alert("No times to copy.");
         return;
       }
-      const openWhatsAppShare = (text) => {
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-        const shareWindow = window.open(
-          whatsappUrl,
-          "_blank",
-          "noopener,noreferrer",
-        );
-        if (!shareWindow) {
-          alert("Copied. Please allow popups to open WhatsApp share.");
-        }
-      };
       const toMinutes = (value) => {
         if (!value) return null;
         const match = value.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
@@ -305,20 +360,93 @@
       const text = extraInfoText
         ? `${bodyText}\n\nADDITIONAL INFORMATION:\n${extraInfoText}`
         : bodyText;
-      navigator.clipboard.writeText(text).then(
-        () => {
-          openWhatsAppShare(text);
-          const btn = copyWhatsAppBtn;
-          const orig = btn.textContent;
-          btn.textContent = "Copied!";
-          btn.disabled = true;
-          setTimeout(() => {
-            btn.textContent = orig;
-            updateButtons();
-          }, 1500);
-        },
-        () => alert("Could not copy to clipboard"),
-      );
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+      // LAN HTTP (Live Server on phone) is not a secure context, so
+      // navigator.clipboard is unavailable. Use sync fallback, then open WA
+      // in the same user-gesture turn (critical on mobile).
+      let copied = false;
+      if (
+        window.isSecureContext &&
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+      ) {
+        // Fire-and-forget async copy; do not gate WhatsApp on it.
+        navigator.clipboard.writeText(text).then(
+          () => {},
+          () => {},
+        );
+        copied = true;
+      } else {
+        copied = copyTextSync(text);
+      }
+
+      const btn = isMobile ? copyWhatsAppBtn : copyWhatsAppBtnDesktop;
+      if (btn && copied) {
+        const orig = btn.textContent;
+        btn.textContent = "Copied!";
+        btn.disabled = true;
+        setTimeout(() => {
+          btn.textContent = orig;
+          updateButtons();
+        }, 1500);
+      }
+
+      if (isMobile) {
+        window.location.href = whatsappUrl;
+        return;
+      }
+
+      const shareWindow = window.open(whatsappUrl, "_blank");
+      if (!shareWindow) {
+        alert(
+          copied
+            ? "Copied. Please allow popups to open WhatsApp share."
+            : "Could not open WhatsApp. Text may not have been copied.",
+        );
+      }
+    }
+
+    function closeActionsMenu() {
+      if (!actionsMenu || !moreBtn) return;
+      actionsMenu.hidden = true;
+      moreBtn.setAttribute("aria-expanded", "false");
+    }
+
+    function openActionsMenu() {
+      if (!actionsMenu || !moreBtn) return;
+      actionsMenu.hidden = false;
+      moreBtn.setAttribute("aria-expanded", "true");
+    }
+
+    function toggleActionsMenu() {
+      if (!actionsMenu) return;
+      if (actionsMenu.hidden) openActionsMenu();
+      else closeActionsMenu();
+    }
+
+    function showHowToUse() {
+      const isMobile = window.matchMedia("(max-width: 767.98px)").matches;
+      const message = isMobile
+        ? [
+            "How to use:",
+            "",
+            "• Tap + NEW to add a time.",
+            "• Tap a row to select it.",
+            "• Use ⋯ next to Times to edit, delete, delete all, or reset flight.",
+            "• COPY WHATSAPP (next to ⋯) shares all times.",
+            "• Tap ! for this help again.",
+          ].join("\n")
+        : [
+            "How to use:",
+            "",
+            "• NEW adds a time.",
+            "• Select a row, then EDIT or DELETE.",
+            "• DELETE ALL clears all times.",
+            "• RESET FLIGHT clears times and flight details for the next flight.",
+            "• COPY WHATSAPP shares all times.",
+          ].join("\n");
+      alert(message);
     }
 
     // Expose actions for inline onclick fallback (so buttons work even if something blocks addEventListener)
@@ -332,8 +460,10 @@
       },
       deleteSelected: deleteSelected,
       deleteAll: deleteAll,
+      newFlight: newFlight,
       copyWhatsApp: copyWhatsApp,
       toggleTheme: toggleTheme,
+      showHowToUse: showHowToUse,
     };
 
     // Toolbar + theme: capture phase on document so we get clicks before anything else
@@ -352,8 +482,17 @@
           "editBtn",
           "deleteBtn",
           "deleteAllBtn",
+          "newFlightBtn",
           "copyWhatsAppBtn",
+          "copyWhatsAppBtnDesktop",
+          "howToUseBtn",
           "themeBtn",
+          "fabNewBtn",
+          "moreBtn",
+          "menuEditBtn",
+          "menuDeleteBtn",
+          "menuDeleteAllBtn",
+          "menuResetFlightBtn",
         ]);
         if (!handledButtonIds.has(btn.id)) return;
         // Prevent duplicate execution from inline onclick fallbacks on the same button.
@@ -362,23 +501,46 @@
 
         switch (btn.id) {
           case "newBtn":
+          case "fabNewBtn":
+            closeActionsMenu();
             openModal();
             break;
           case "editBtn":
+          case "menuEditBtn":
+            closeActionsMenu();
             if (selectedIds.size > 0) openModal([...selectedIds][0]);
             else alert("Please select a row first.");
             break;
           case "deleteBtn":
+          case "menuDeleteBtn":
+            closeActionsMenu();
             deleteSelected();
             break;
           case "deleteAllBtn":
+          case "menuDeleteAllBtn":
+            closeActionsMenu();
             deleteAll();
             break;
+          case "newFlightBtn":
+          case "menuResetFlightBtn":
+            closeActionsMenu();
+            newFlight();
+            break;
           case "copyWhatsAppBtn":
+          case "copyWhatsAppBtnDesktop":
+            closeActionsMenu();
             copyWhatsApp();
             break;
+          case "howToUseBtn":
+            closeActionsMenu();
+            showHowToUse();
+            break;
           case "themeBtn":
+            closeActionsMenu();
             toggleTheme();
+            break;
+          case "moreBtn":
+            toggleActionsMenu();
             break;
           default:
             break;
@@ -386,6 +548,18 @@
       },
       true,
     );
+
+    document.addEventListener("click", (e) => {
+      if (!actionsMenu || actionsMenu.hidden) return;
+      if (e.target.closest("#moreBtn") || e.target.closest("#actionsMenu")) {
+        return;
+      }
+      closeActionsMenu();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeActionsMenu();
+    });
 
     // Keep direct listeners only for non-toolbar (modal, form, inputs)
     if (form) {
@@ -433,6 +607,11 @@
       flightNumber.addEventListener("input", () => {
         flightNumber.value = flightNumber.value.toUpperCase();
       });
+    }
+
+    if (additionalInfo) {
+      additionalInfo.addEventListener("input", autoResizeAdditionalInfo);
+      autoResizeAdditionalInfo();
     }
 
     loadTheme();
