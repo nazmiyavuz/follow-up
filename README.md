@@ -34,6 +34,18 @@ Copied text includes:
 - Time entries sorted by time
 - Optional additional information section
 
+## Run Locally
+
+From the project folder in a terminal:
+
+1. Start the server:
+   ```bash
+   npx serve .
+   ```
+2. Open the URL shown in the terminal (usually `http://localhost:3000`).
+3. To try it on a phone on the same Wi‑Fi, use your computer’s local IP instead of `localhost` (for example `http://192.168.x.x:3000`).
+4. Stop the server with **`Ctrl + C`** in that same terminal.
+
 ## Tips
 
 - If no row is selected, edit/delete actions will ask you to select one first.
