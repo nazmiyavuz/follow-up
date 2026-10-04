@@ -542,7 +542,7 @@
       const extraInfoText = additionalInfo ? additionalInfo.value.trim() : "";
       const bodyText = header + timeLines.join("\n");
       const text = extraInfoText
-        ? `${bodyText}\n\nADDITIONAL INFORMATION:\n${extraInfoText}`
+        ? `${bodyText}\n\n\nADDITIONAL INFO:\n\n${extraInfoText}`
         : bodyText;
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
 
