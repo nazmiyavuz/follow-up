@@ -700,6 +700,23 @@ body.modal-open {
   color: var(--text-muted);
 }
 
+/* ----- App version ----- */
+.app-version {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: max(0.5rem, env(safe-area-inset-bottom));
+  z-index: 40;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 /* ----- Additional info ----- */
 .extra-info {
   margin-top: 1rem;
