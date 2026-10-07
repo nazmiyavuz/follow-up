@@ -342,6 +342,21 @@
       }
     }
 
+    let bodyScrollY = 0;
+
+    function lockBodyScroll() {
+      bodyScrollY = window.scrollY || window.pageYOffset || 0;
+      document.body.classList.add("modal-open");
+      document.body.style.top = `-${bodyScrollY}px`;
+    }
+
+    function unlockBodyScroll() {
+      if (!document.body.classList.contains("modal-open")) return;
+      document.body.classList.remove("modal-open");
+      document.body.style.top = "";
+      window.scrollTo(0, bodyScrollY);
+    }
+
     function openModal(id = null) {
       if (!modal) return;
       editingId = id;
@@ -357,6 +372,7 @@
       if (titleEl) titleEl.textContent = isEditing ? "Edit time" : "New time";
 
       if (isEditing && timeValue) timeValue.setAttribute("autofocus", "");
+      lockBodyScroll();
       modal.showModal();
       if (timeValue) timeValue.removeAttribute("autofocus");
 
@@ -386,6 +402,7 @@
         utcUpdateInterval = null;
       }
       if (modal) modal.close();
+      unlockBodyScroll();
       editingId = null;
     }
 
@@ -809,6 +826,8 @@
       modal.addEventListener("click", (e) => {
         if (e.target === modal) closeModal();
       });
+      // Escape / native dialog close should also unlock background scroll.
+      modal.addEventListener("close", unlockBodyScroll);
     }
 
     if (flightNumber) {

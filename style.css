@@ -55,6 +55,16 @@ body {
   line-height: 1.5;
 }
 
+body.modal-open {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
 /* ----- Lightweight utility classes (Bootstrap replacement) ----- */
 .container {
   width: 100%;
@@ -739,6 +749,8 @@ body {
   background: var(--surface);
   max-width: 360px;
   width: 90%;
+  overscroll-behavior: contain;
+  touch-action: auto;
 }
 
 .modal::backdrop {
@@ -786,6 +798,8 @@ body {
   max-height: 42vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   padding: 0.1rem 0.05rem 0.15rem;
 }
 
