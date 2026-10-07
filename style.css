@@ -1,6 +1,7 @@
 /* ----- Variables ----- */
 :root {
   /* iOS Settings light */
+  color-scheme: light;
   --bg: #f2f2f7;
   --surface: #ffffff;
   --text: #000000;
@@ -20,6 +21,7 @@
 
 [data-theme="dark"] {
   /* iOS Settings dark */
+  color-scheme: dark;
   --bg: #000000;
   --surface: #1c1c1e;
   --text: #ffffff;
@@ -53,6 +55,16 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
+}
+
+body.modal-open {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
 }
 
 /* ----- Lightweight utility classes (Bootstrap replacement) ----- */
@@ -737,8 +749,12 @@ body {
   padding: 0;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
   background: var(--surface);
+  color: var(--text);
+  color-scheme: inherit;
   max-width: 360px;
   width: 90%;
+  overscroll-behavior: contain;
+  touch-action: auto;
 }
 
 .modal::backdrop {
@@ -747,12 +763,14 @@ body {
 
 .modal-form {
   padding: 1.5rem;
+  color: var(--text);
 }
 
 .modal-title {
   margin: 0 0 1.25rem;
   font-size: 1.25rem;
   font-weight: 600;
+  color: var(--text);
 }
 
 .field {
@@ -786,6 +804,8 @@ body {
   max-height: 42vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   padding: 0.1rem 0.05rem 0.15rem;
 }
 
