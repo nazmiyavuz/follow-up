@@ -44,16 +44,17 @@
     const CUSTOM_LABEL_KEY = "__custom__";
     const LABEL_GROUPS = [
       {
-        title: "Arrival",
+        title: "PRE-FLIGHT",
         labels: [
           "Crew Pickup (Hotel)",
           "Arrived to the Airport",
           "Leave Fly Wise",
           "Arrived to the Aircraft",
+          "Deboarding Complete",
         ],
       },
       {
-        title: "On ground",
+        title: "ON GROUND",
         labels: [
           "Security Search Complete",
           "Deboarding Complete",
@@ -62,7 +63,7 @@
         ],
       },
       {
-        title: "Departure",
+        title: "DEPARTURE",
         labels: [
           "Door Close",
           "Bridge Off",
@@ -266,18 +267,20 @@
       });
     }
 
+    const DEFAULT_OPEN_SECTIONS = ["ON GROUND", "DEPARTURE"];
+
     function openSectionForLabel(labelKey) {
       if (!labelKey || labelKey === CUSTOM_LABEL_KEY) {
-        applySectionOpenState(["On ground", "Departure"]);
+        applySectionOpenState(DEFAULT_OPEN_SECTIONS);
         return;
       }
       const group = LABEL_GROUPS.find((g) => g.labels.includes(labelKey));
       if (group) applySectionOpenState([group.title]);
-      else applySectionOpenState(["On ground", "Departure"]);
+      else applySectionOpenState(DEFAULT_OPEN_SECTIONS);
     }
 
     function applyNewSectionDefaults() {
-      applySectionOpenState(["On ground", "Departure"]);
+      applySectionOpenState(DEFAULT_OPEN_SECTIONS);
       if (labelPicker) labelPicker.scrollTop = 0;
     }
 
